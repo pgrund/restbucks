@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://cxf.apache.org/jaxrs
+http://cxf.apache.org/schemas/jaxrs.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd" xmlns:util="http://www.springframework.org/schema/util">
+
+    <import resource="classpath:META-INF/cxf/cxf.xml" />
+
+    <context:property-placeholder/>
+    <context:annotation-config/>
+    <bean class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer"/>
+    <bean class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer"/>
+    <bean class="de.nichtsohnegrund.dev.CustomerFormatRegistryBean"/>
+
+    <jaxrs:server id="services" address="/">
+        <jaxrs:serviceBeans>
+            <bean class="de.nichtsohnegrund.dev.restbucks.OrderResource">
+                <property name="activity">
+                    <bean class="de.nichtsohnegrund.dev.restbucks.activity.OrderActivity">
+                        <property name="service">
+                            <bean class="de.nichtsohnegrund.dev.restbucks.OrderService">
+                                <property name="allOrders">
+                                    <util:map key-type="java.util.UUID" 
+                                              value-type="de.nichtsohnegrund.dev.restbucks.model.Order">
+                                        <entry key="8e7c4ee2-281a-4de6-99d3-6a56fb7ae01b">
+                                            <bean class="de.nichtsohnegrund.dev.restbucks.model.Order">
+                                                <property name="costs" value="0.0"/>
+                                                <property name="location" value="TAKE_AWAY"/>
+                                                <property name="status" value="UNPAID"/>
+                                                <property name="items">
+                                                    <util:list value-type="de.nichtsohnegrund.dev.restbucks.model.Item">
+                                                        <bean class="de.nichtsohnegrund.dev.restbucks.model.Item">
+                                                            <property name="name" value="LATTE"/>
+                                                            <property name="milk" value="SEMI"/>
+                                                            <property name="size" value="SMALL"/>
+                                                            <property name="quantitiy" value="1"/>
+                                                        </bean>
+                                                    </util:list>
+                                                </property>
+                                            </bean>
+                                        </entry>
+                                    </util:map>
+                                </property>    
+                            </bean>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </jaxrs:serviceBeans>
+        <jaxrs:extensionMappings>
+            <entry key="json" value="application/json"/>
+            <entry key="xml" value="application/xml"/>
+        </jaxrs:extensionMappings>
+        <jaxrs:providers>
+            <ref bean="jaxbXmlProvider"/>
+        </jaxrs:providers>
+    </jaxrs:server>
+    
+    
+    <!-- Webservice message handlers -->
+    <bean id="jaxbXmlProvider" class="org.apache.cxf.jaxrs.provider.JAXBElementProvider">
+        <property name="namespacePrefixes">
+            <util:map id="namespaceMap">
+                <entry value="rb">
+                    <key>
+                        <util:constant static-field="de.nichtsohnegrund.dev.restbucks.representation.Representation.RESTBUCKS_NAMESPACE"/>
+                    </key>
+                </entry>
+                <entry value="dap">
+                    <key>
+                        <util:constant static-field="de.nichtsohnegrund.dev.restbucks.representation.Representation.DAP_NAMESPACE"/>
+                    </key>
+                </entry>
+            </util:map>
+        </property>
+    </bean>
+ 
+    <bean id="dispatchProvider" class="org.apache.cxf.jaxrs.provider.RequestDispatcherProvider">
+        <property name="resourcePath" value="/index.html"/>
+    </bean>
+</beans>
