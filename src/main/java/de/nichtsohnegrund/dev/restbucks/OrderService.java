@@ -121,6 +121,10 @@ public class OrderService {
         if(old == null) {
             throw new NoSuchOrderException();
         }
+        // changes only for unpaid orders
+        if(old.status != OrderStatus.UNPAID) {
+            throw new InvalidOrderException();
+        }
         
         validateOrder(order);
         allOrders.put(id, order);
