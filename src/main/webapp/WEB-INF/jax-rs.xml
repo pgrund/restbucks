@@ -12,6 +12,7 @@ http://cxf.apache.org/schemas/jaxrs.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd" xmlns:util="http://www.springframework.org/schema/util">
 
     <import resource="classpath:META-INF/cxf/cxf.xml" />
+    <import resource="pojo.xml"/>
 
     <context:property-placeholder/>
     <context:annotation-config/>
@@ -20,41 +21,24 @@ http://cxf.apache.org/schemas/jaxrs.xsd
     <bean class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer"/>
     <bean class="de.nichtsohnegrund.dev.CustomerFormatRegistryBean"/>
 
+    <bean id="orderactivity" class="de.nichtsohnegrund.dev.restbucks.activity.OrderActivity">
+        <property name="service" ref="orderservice"/>   
+    </bean>
+    <bean id="paymentactiviy" class="de.nichtsohnegrund.dev.restbucks.activity.PaymentActivity">
+        <property name="service" ref="paymentservice"/>
+    </bean>    
     
     
     <jaxrs:server id="services" address="/">
         <jaxrs:serviceBeans>
-            <bean class="de.nichtsohnegrund.dev.restbucks.OrderResource">
-                <property name="activity">
-                    <bean class="de.nichtsohnegrund.dev.restbucks.activity.OrderActivity">
-                        <property name="service">
-                            <bean class="de.nichtsohnegrund.dev.restbucks.OrderService">
-                                <property name="allOrders">
-                                    <util:map key-type="java.lang.Long" 
-                                              value-type="de.nichtsohnegrund.dev.restbucks.model.Order">
-                                        <entry key="8">
-                                            <bean class="de.nichtsohnegrund.dev.restbucks.model.Order">
-                                                <property name="costs" value="0.0"/>
-                                                <property name="location" value="TAKE_AWAY"/>
-                                                <property name="status" value="UNPAID"/>
-                                                <property name="items">
-                                                    <util:list value-type="de.nichtsohnegrund.dev.restbucks.model.Item">
-                                                        <bean class="de.nichtsohnegrund.dev.restbucks.model.Item">
-                                                            <property name="name" value="LATTE"/>
-                                                            <property name="milk" value="SEMI"/>
-                                                            <property name="size" value="SMALL"/>
-                                                            <property name="quantitiy" value="1"/>
-                                                        </bean>
-                                                    </util:list>
-                                                </property>
-                                            </bean>
-                                        </entry>
-                                    </util:map>
-                                </property>    
-                            </bean>
-                        </property>
-                    </bean>
-                </property>
+            <bean id="order" class="de.nichtsohnegrund.dev.restbucks.OrderResource">
+                <property name="activity" ref="orderactivity"/>
+            </bean>
+            <bean id="payment" class="de.nichtsohnegrund.dev.restbucks.PaymentResource">
+                <property name="activity" ref="paymentactiviy"/>
+            </bean>
+            <bean id="receipt" class="de.nichtsohnegrund.dev.restbucks.ReceiptResource">
+                <property name="activity" ref="paymentactiviy"/>
             </bean>
         </jaxrs:serviceBeans>
         <jaxrs:extensionMappings>
@@ -63,6 +47,7 @@ http://cxf.apache.org/schemas/jaxrs.xsd
         </jaxrs:extensionMappings>
         <jaxrs:providers>
             <ref bean="jaxbXmlProvider"/>
+            <ref bean="xsltProvider"/>
         </jaxrs:providers>
     </jaxrs:server>
     
@@ -85,7 +70,12 @@ http://cxf.apache.org/schemas/jaxrs.xsd
         </property>
     </bean>
  
-    <bean id="dispatchProvider" class="org.apache.cxf.jaxrs.provider.RequestDispatcherProvider">
-        <property name="resourcePath" value="/index.html"/>
+  
+    <bean id="xsltProvider" class="org.apache.cxf.jaxrs.provider.XSLTJaxbProvider">    
+        <property name="outMediaTemplates">
+            <map>
+                <entry key="text/html" value="classpath:/WEB-INF/templates/order-html.xsl"/>
+            </map>
+        </property>
     </bean>
 </beans>

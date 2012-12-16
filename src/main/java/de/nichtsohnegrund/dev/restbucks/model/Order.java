@@ -2,18 +2,17 @@ package de.nichtsohnegrund.dev.restbucks.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlEnumValue;
 
 /**
  *
  * @author <a href="mailto:pgrund">pgrund</a>
  */
 public class Order {
-    
+
     public long id;
     public Location location;
     public OrderStatus status;
-    public Double costs;
-    
     public List<Item> items = new ArrayList<Item>();
 
     public Location getLocation() {
@@ -32,12 +31,14 @@ public class Order {
         this.status = status;
     }
 
-    public Double getCosts() {
-        return costs;
-    }
-
-    public void setCosts(Double costs) {
-        this.costs = costs;
+    public Double calculateCosts() {
+        double total = 0.0;
+        for (Item item : items) {
+            if (item != null && item.getName() != null) {
+                total += item.getName().getPrice();
+            }
+        }
+        return total;
     }
 
     public List<Item> getItems() {
@@ -47,18 +48,54 @@ public class Order {
     public void setItems(List<Item> items) {
         this.items = items;
     }
-    
+
     public enum Drink {
-        LATTE, CAPUCCINO, ESPRESSO, TEA;
+
+        @XmlEnumValue(value = "espresso")
+        ESPRESSO(1.5),
+        @XmlEnumValue(value = "latte")
+        LATTE(2.0),
+        @XmlEnumValue(value = "cappuccino")
+        CAPPUCCINO(2.0),
+        @XmlEnumValue(value = "flatWhite")
+        FLAT_WHITE(2.0);
+        final double price;
+
+        Drink(double price) {
+            this.price = price;
+        }
+
+        public double getPrice() {
+            return this.price;
+        }
     }
+
     public enum Milk {
-        SKIM, SEMI, WHOLE;
+
+        @XmlEnumValue(value = "skim")
+        SKIM,
+        @XmlEnumValue(value = "semi")
+        SEMI,
+        @XmlEnumValue(value = "whole")
+        WHOLE;
     }
+
     public enum Size {
-        SMALL, MEDIUM, LARGE;
+
+        @XmlEnumValue(value = "small")
+        SMALL, 
+        @XmlEnumValue(value = "medium")
+        MEDIUM, 
+        @XmlEnumValue(value = "large")
+        LARGE;
     }
+
     public enum Shots {
-        SINGLE, DOUBLE, TRIPLE;
+        @XmlEnumValue(value = "single")
+        SINGLE,
+        @XmlEnumValue(value = "double")
+        DOUBLE, 
+        @XmlEnumValue(value = "triple")
+        TRIPLE;
     }
-    
 }

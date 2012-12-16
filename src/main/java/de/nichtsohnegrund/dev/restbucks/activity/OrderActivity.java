@@ -13,8 +13,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import javax.ws.rs.core.Link;
 
 /**
  * Provide Domain Application Model (HATEOAS) and mapping between
@@ -36,25 +34,25 @@ public class OrderActivity {
         switch (status) {
             case UNPAID:
                 links.add(new LinkRepresentation(Representation.RELATIONS_URI
-                        + "cancel", orderUri));
+                        + "cancel", orderUri, "cancel", Representation.RESTBUCKS_MEDIATYPE));
                 links.add(new LinkRepresentation(Representation.RELATIONS_URI
                             + "payment", new URI(base + "payment/"
-                        + identifier.toString())));
+                        + identifier.toString()), "pay", Representation.RESTBUCKS_MEDIATYPE));
                 links.add(new LinkRepresentation(Representation.RELATIONS_URI
-                            + "update", orderUri));
+                            + "update", orderUri, "update", Representation.RESTBUCKS_MEDIATYPE));
                 links.add(new LinkRepresentation(Representation.SELF_REL_VALUE,
-                        orderUri));
+                        orderUri, "self", Representation.RESTBUCKS_MEDIATYPE));
                 break;
             case PREPARING: 
                 links.add(new LinkRepresentation(Representation.SELF_REL_VALUE,
-                        orderUri));
+                        orderUri, "self", Representation.RESTBUCKS_MEDIATYPE));
                 break;
             case READY:
                 links.add(new LinkRepresentation(Representation.RELATIONS_URI
                             + "receipt", new URI(base + "receipt/"
-                        + identifier.toString())));
+                        + identifier.toString()), "receipt", Representation.RESTBUCKS_MEDIATYPE));
                 links.add(new LinkRepresentation(Representation.SELF_REL_VALUE,
-                        orderUri));
+                        orderUri, "self", Representation.RESTBUCKS_MEDIATYPE));
                 break;
             case DELIVERED: case CANCELED:
                 break;
@@ -86,16 +84,16 @@ public class OrderActivity {
         order.items = representation.getItems();
         order.location = Location.valueOf(representation.getLocation());
        
-        UUID id = service.createOrder(order);
+        Long id = service.createOrder(order);
         
         return new OrderRepresentation(order, getHypermedia(id.toString(),
                 baseUri, order.status));
     }
 
-    public OrderRepresentation read(UUID identifier, URI baseUri)
+    public OrderRepresentation read(String identifier, URI baseUri)
         throws Exception {
         
-        Order order = service.readOrder(identifier);
+        Order order = service.readOrder(Long.parseLong(identifier));
         
         return new OrderRepresentation(order, getHypermedia(identifier.toString(),
                 baseUri, order.status));
@@ -108,9 +106,8 @@ public class OrderActivity {
         order.status = OrderStatus.valueOf(representation.getStatus());
         order.items = representation.getItems();
         order.location = Location.valueOf(representation.getLocation());
-        order.costs = representation.getCost();
         
-        Order result = service.updateOrder(order, UUID.fromString(identifier));
+        Order result = service.updateOrder(order, Long.parseLong(identifier));
         return new OrderRepresentation(result, getHypermedia(identifier,
                 baseUri, result.status));
     }
@@ -119,7 +116,7 @@ public class OrderActivity {
     public OrderRepresentation delete(String identifier, URI baseUri)
             throws Exception {
         
-        Order order = service.readOrder(UUID.fromString(identifier));
+        Order order = service.readOrder(Long.parseLong(identifier));
         
         switch (order.status) {
             case UNPAID:

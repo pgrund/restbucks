@@ -9,7 +9,7 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>WEB-INF/beans.xml</param-value>
+        <param-value>WEB-INF/jax-rs.xml</param-value>
     </context-param>
 
     <listener>
@@ -34,4 +34,9 @@
         <servlet-name>CXFServlet</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
+    
+   
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
 </web-app>

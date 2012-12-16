@@ -59,6 +59,11 @@ public class LinkRepresentation {
         this.rel = rel;
         this.uri = uri;
     }
+    public LinkRepresentation(String rel, URI uri, String type) {
+        this.rel = rel;
+        this.uri = uri;
+        this.type = type;
+    }
 
     public LinkRepresentation(String rel, URI uri, String title, String type) {
         this.rel = rel;

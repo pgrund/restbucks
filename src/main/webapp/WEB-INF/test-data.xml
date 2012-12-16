@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd" xmlns:util="http://www.springframework.org/schema/util">
+
+  
+    
+    <util:map id="testdata" key-type="java.lang.Long" value-type="de.nichtsohnegrund.dev.restbucks.model.Order">
+                <entry key="1">
+                    <bean class="de.nichtsohnegrund.dev.restbucks.model.Order">
+                        <property name="location" value="TAKE_AWAY"/>
+                        <property name="status" value="UNPAID"/>
+                        <property name="items">
+                            <util:list value-type="de.nichtsohnegrund.dev.restbucks.model.Item">
+                                <bean class="de.nichtsohnegrund.dev.restbucks.model.Item">
+                                    <property name="name" value="LATTE"/>
+                                    <property name="milk" value="SEMI"/>
+                                    <property name="size" value="SMALL"/>
+                                    <property name="quantitiy" value="1"/>
+                                </bean>
+                            </util:list>
+                        </property>
+                    </bean>
+                </entry>
+                 <entry key="2">
+                    <bean class="de.nichtsohnegrund.dev.restbucks.model.Order">
+                        <property name="location" value="TAKE_AWAY"/>
+                        <property name="status" value="PREPARING"/>
+                        <property name="items">
+                            <util:list value-type="de.nichtsohnegrund.dev.restbucks.model.Item">
+                                <bean class="de.nichtsohnegrund.dev.restbucks.model.Item">
+                                    <property name="name" value="CAPPUCCINO"/>
+                                    <property name="milk" value="SEMI"/>
+                                    <property name="size" value="SMALL"/>
+                                    <property name="quantitiy" value="2"/>
+                                </bean>
+                            </util:list>
+                        </property>
+                    </bean>
+                </entry>
+            </util:map>
+</beans>

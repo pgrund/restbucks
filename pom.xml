@@ -5,37 +5,26 @@
     <artifactId>restbuck</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
+    
     <name>RESTBucks</name>
-    <description>Simple CXF JAX-RS webapp service using spring configuration</description>
+    <description>RESTBucks example, known from *REST in practice*, based on CXF.</description>
+    
     <properties>
-        <jackson.version>1.8.6</jackson.version>
+        <cxf.version>2.7.0</cxf.version>
+        <spring.version>3.0.6.RELEASE</spring.version>
     </properties>
+    
     <dependencies>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-            <version>2.7.0</version>
+            <version>${cxf.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-extension-providers</artifactId>
-            <version>2.7.0</version>
+            <version>${cxf.version}</version>
         </dependency>
-        <!--dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-jaxrs</artifactId>
-            <version>${jackson.version}</version>
-        </dependenc-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -45,13 +34,18 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>3.0.6.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>3.0.6.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>    
+         <!--dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.7</version>
+        </dependency-->
     </dependencies>
     <build>
         <pluginManagement>

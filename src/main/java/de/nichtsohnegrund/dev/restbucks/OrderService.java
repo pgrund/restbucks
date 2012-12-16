@@ -8,7 +8,6 @@ import de.nichtsohnegrund.dev.restbucks.model.Order;
 import de.nichtsohnegrund.dev.restbucks.model.OrderStatus;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Business logic for administration of {@link Order} objects, using
@@ -19,7 +18,9 @@ import java.util.UUID;
  */
 public class OrderService {
 
-     private Map<UUID, Order> allOrders = new HashMap<UUID, Order>();
+     private static long counterIncr = 2;
+    
+     private Map<Long, Order> allOrders = new HashMap<Long, Order>();
    
      private void validateOrder(Order order) throws InvalidOrderException {
         if(order == null) {
@@ -62,7 +63,7 @@ public class OrderService {
         }
     }
 
-    public void setAllOrders(Map<UUID, Order> allOrders) {
+    public void setAllOrders(Map<Long, Order> allOrders) {
         this.allOrders = allOrders;
     }
     
@@ -74,12 +75,13 @@ public class OrderService {
      * @return uniqe identifier as {@link UUID}
      * @throws InvalidOrderException
      */
-    public UUID createOrder(Order order) throws InvalidOrderException {
+    public Long createOrder(Order order) throws InvalidOrderException {
         
         validateOrder(order);
         order.status = OrderStatus.UNPAID;
 
-        UUID identifier = UUID.randomUUID();
+        Long identifier = counterIncr++;
+        order.id = identifier;
         allOrders.put(identifier, order);
         
         return identifier;
@@ -92,7 +94,7 @@ public class OrderService {
      * @return known {@link Order} or <strong>null</strong>
      * @throws NoSuchOrderException
      */
-    public Order readOrder(UUID id) throws NoSuchOrderException {
+    public Order readOrder(Long id) throws NoSuchOrderException {
         Order order = allOrders.get(id);
         
         if(order == null) {
@@ -111,7 +113,7 @@ public class OrderService {
      * @throws IllegalStateException if not identifier present
      * @throws InvalidOrderException if passed {@link Order} is not valid
      */
-    public Order updateOrder(Order order, UUID id) throws NoSuchOrderException,
+    public Order updateOrder(Order order, Long id) throws NoSuchOrderException,
             IllegalStateException, InvalidOrderException{
         if(id == null) {
             throw new IllegalStateException("no id present");
@@ -138,7 +140,7 @@ public class OrderService {
      * @throws NoSuchOrderException if id unknown
      * @throws OrderDeletionException if state machine does not allow deleting
      */
-    public void deleteOrder(UUID id) throws OrderDeletionException,
+    public void deleteOrder(Long id) throws OrderDeletionException,
             NoSuchOrderException {
         Order order = readOrder(id);
         

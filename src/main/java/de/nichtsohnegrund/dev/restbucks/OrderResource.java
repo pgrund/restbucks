@@ -6,15 +6,19 @@ import de.nichtsohnegrund.dev.restbucks.exceptions.NoSuchOrderException;
 import de.nichtsohnegrund.dev.restbucks.exceptions.OrderDeletionException;
 import de.nichtsohnegrund.dev.restbucks.exceptions.UpdateException;
 import de.nichtsohnegrund.dev.restbucks.representation.OrderRepresentation;
-import java.util.UUID;
+import de.nichtsohnegrund.dev.restbucks.representation.Representation;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.ServerErrorException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -28,9 +32,7 @@ import javax.ws.rs.core.UriInfo;
  */
 @Path("/order")
 public class OrderResource {
-    
-    private final static String VND_RESTBUCKS_XML = "application/vnd.restbucks+xml";
-
+   
     private @Context UriInfo uriInfo;
     
     private OrderActivity activity;
@@ -42,12 +44,12 @@ public class OrderResource {
     
     @GET
     @Path("/{orderId}")
-    @Produces(VND_RESTBUCKS_XML)
+    @Produces(Representation.RESTBUCKS_MEDIATYPE)
     public Response getOrder(@PathParam("orderId") String orderId){
         try {
             System.out.println(">>" + orderId +"<<");
             OrderRepresentation representation = activity
-                    .read(UUID.fromString(orderId), uriInfo.getBaseUri());
+                    .read(orderId, uriInfo.getBaseUri());
             return Response.ok().entity(representation).build();
         } catch (NoSuchOrderException nsoe) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -57,9 +59,26 @@ public class OrderResource {
         }
     }
     
+    @GET
+    @Path("/{orderId}")
+    @Produces(MediaType.TEXT_HTML)
+    public OrderRepresentation getOrderAsHTML(@PathParam("orderId") String orderId)
+        throws WebApplicationException {
+        try {
+            OrderRepresentation order = activity
+                    .read(orderId, uriInfo.getBaseUri());
+            return order;
+        } catch (NoSuchOrderException nsoe) {
+            throw new NotFoundException();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServerErrorException(500);
+        }
+    }
+    
     @POST
-    @Consumes(VND_RESTBUCKS_XML)
-    @Produces(VND_RESTBUCKS_XML)
+    @Consumes(Representation.RESTBUCKS_MEDIATYPE)
+    @Produces(Representation.RESTBUCKS_MEDIATYPE)
     public Response createOrder(OrderRepresentation order) {
         try {
            OrderRepresentation response = activity
@@ -75,7 +94,7 @@ public class OrderResource {
     
     @DELETE
     @Path("/{orderId}")
-    @Produces(VND_RESTBUCKS_XML)
+    @Produces(Representation.RESTBUCKS_MEDIATYPE)
     public Response removeOrder(@PathParam("orderId")String orderId) {
         try {
             OrderRepresentation removedOrder = activity
@@ -92,8 +111,8 @@ public class OrderResource {
     
     @POST
     @Path("/{orderId}")
-    @Consumes(VND_RESTBUCKS_XML)
-    @Produces(VND_RESTBUCKS_XML)
+    @Consumes(Representation.RESTBUCKS_MEDIATYPE)
+    @Produces(Representation.RESTBUCKS_MEDIATYPE)
     public Response updateOrder(@PathParam("orderId") String orderId, 
         OrderRepresentation orderRepresentation){
         

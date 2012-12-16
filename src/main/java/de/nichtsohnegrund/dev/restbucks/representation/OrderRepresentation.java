@@ -4,6 +4,7 @@ import de.nichtsohnegrund.dev.restbucks.model.Item;
 import de.nichtsohnegrund.dev.restbucks.model.Order;
 import java.util.Arrays;
 import java.util.List;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -27,11 +28,12 @@ public class OrderRepresentation extends Representation {
         this();
         this.location = order.location.name();
         this.items = order.items;
-        this.cost = order.costs;
+        this.cost = order.calculateCosts();
         this.status = order.status.name();
         this.links = Arrays.asList(links);
     }
 
+    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE)
     public String getLocation() {
         return location;
     }
@@ -40,6 +42,7 @@ public class OrderRepresentation extends Representation {
         this.location = location;
     }
 
+    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE)
     public String getStatus() {
         return status;
     }
@@ -48,6 +51,7 @@ public class OrderRepresentation extends Representation {
         this.status = status;
     }
 
+    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE)
     public Double getCost() {
         return cost;
     }
@@ -56,6 +60,7 @@ public class OrderRepresentation extends Representation {
         this.cost = cost;
     }
 
+    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE)
     public List<Item> getItems() {
         return items;
     }
