@@ -9,6 +9,6 @@ package de.nichtsohnegrund.dev.restbucks.exceptions;
  *
  * @author <a href="mailto:pgrund">pgrund</a>
  */
-public class OrderDeletionException extends Exception {
+public class OrderDeletionException extends OrderException {
 
 }

@@ -21,6 +21,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import net.anotheria.moskito.aop.annotation.Monitor;
 
 /**
  * JAX-RS Resource for {@link OrderRepresentation}.
@@ -31,6 +32,7 @@ import javax.ws.rs.core.UriInfo;
  * @author <a href="mailto:pgrund">pgrund</a>
  */
 @Path("/order")
+@Monitor
 public class OrderResource {
    
     private @Context UriInfo uriInfo;
@@ -45,7 +47,7 @@ public class OrderResource {
     @GET
     @Path("/{orderId}")
     @Produces(Representation.RESTBUCKS_MEDIATYPE)
-    public Response getOrder(@PathParam("orderId") String orderId){
+    public Response getOrder(@PathParam("orderId") String orderId)throws Exception{
         try {
             System.out.println(">>" + orderId +"<<");
             OrderRepresentation representation = activity

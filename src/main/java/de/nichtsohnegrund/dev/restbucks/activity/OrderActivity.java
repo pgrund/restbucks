@@ -31,16 +31,17 @@ public class OrderActivity {
         URI orderUri = new URI(base + "order/"
                 + identifier.toString());
         
+        String relationBase = "http://localhost:8080/relations.html#";///Representation.RELATIONS_URI;
         switch (status) {
             case UNPAID:
-                links.add(new LinkRepresentation(Representation.RELATIONS_URI
+                links.add(new LinkRepresentation(relationBase
                         + "cancel", orderUri, "cancel", Representation.RESTBUCKS_MEDIATYPE));
-                links.add(new LinkRepresentation(Representation.RELATIONS_URI
+                links.add(new LinkRepresentation(relationBase
                             + "payment", new URI(base + "payment/"
                         + identifier.toString()), "pay", Representation.RESTBUCKS_MEDIATYPE));
-                links.add(new LinkRepresentation(Representation.RELATIONS_URI
+                links.add(new LinkRepresentation(relationBase
                             + "update", orderUri, "update", Representation.RESTBUCKS_MEDIATYPE));
-                links.add(new LinkRepresentation(Representation.SELF_REL_VALUE,
+                links.add(new LinkRepresentation(relationBase + Representation.SELF_REL_VALUE,
                         orderUri, "self", Representation.RESTBUCKS_MEDIATYPE));
                 break;
             case PREPARING: 
@@ -48,7 +49,7 @@ public class OrderActivity {
                         orderUri, "self", Representation.RESTBUCKS_MEDIATYPE));
                 break;
             case READY:
-                links.add(new LinkRepresentation(Representation.RELATIONS_URI
+                links.add(new LinkRepresentation(relationBase
                             + "receipt", new URI(base + "receipt/"
                         + identifier.toString()), "receipt", Representation.RESTBUCKS_MEDIATYPE));
                 links.add(new LinkRepresentation(Representation.SELF_REL_VALUE,
