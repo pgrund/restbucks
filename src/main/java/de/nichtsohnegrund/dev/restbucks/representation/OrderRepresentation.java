@@ -29,7 +29,7 @@ public class OrderRepresentation extends Representation {
         this.links = Arrays.asList(links);
     }
    
-    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE, required = true)
+    @XmlElement(required = true)
     public String getLocation() {
         return location;
     }

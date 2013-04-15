@@ -135,18 +135,25 @@
         </html>
     </xsl:template>
     
+    <xsl:template match="status">
+      
+    </xsl:template>
+    
     <xsl:template match="rb:order" >            
-        <div class="order">
-            <span class="status">
-                <xsl:value-of select="rb:status"/>
-            </span>
-            <p class="location">
-                <xsl:value-of select="rb:location"/>
-            </p>
             <ul>
                 <xsl:apply-templates select="rb:items"/>
             </ul>
-        </div> 
+            <p class="location">
+                <xsl:value-of select="location"/>
+            </p>
+    </xsl:template>
+    
+    <xsl:template match="rb:order" mode="update">
+        <form action="#" method="post" id="updateOrder">
+            <xsl:apply-templates select="rb:items" mode="update"/>
+            
+            <button type="submit" class="btn">update</button>
+        </form>
     </xsl:template>
     
     <xsl:template match="rb:items">
@@ -168,12 +175,26 @@
     
     <xsl:template match="dap:link[@title='self']" mode="content">
         <div class="tab-pane active" id="self">
-            <xsl:apply-templates select="//rb:order"/>
+            <div class="order">
+                <p class="status">
+                    <xsl:choose>
+                        <xsl:when test="../status = 'UNPAID'">
+                            Your order is awaiting payment. <br/> You may also <a href="#cancel" data-toggle="tab">cancel</a> your order completely.
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <span class="alert">
+                                <xsl:value-of select="../status"/>
+                            </span>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </p>    
+                <xsl:apply-templates select="//rb:order"/>
+            </div>
         </div>
     </xsl:template>
     
     <xsl:template match="dap:link[@title='cancel']" mode="content">
-        <div class="tab-pane active" id="cancel">
+        <div class="tab-pane" id="cancel">
             <p>Are you sure you want to cancel/delete this order ?</p>
             <p>
                 <xsl:apply-templates select="//rb:order"/>
@@ -192,40 +213,21 @@
         </script>
         </div>
     </xsl:template>
+     <xsl:template match="dap:link[@title='update']" mode="content">
+        <div class="tab-pane" id="update">
+            <p>
+                <xsl:apply-templates select="//rb:order" mode="update"/>
+            </p>
+            <button class="btn" type="button" onclick="updateOrder();">update</button>
+            <script type="text/javascript">
+            function updateOrder() {
+                   alert("updated");
+               }
+        </script>
+        </div>
+    </xsl:template>
     <xsl:template match="dap:link" mode="content">                      
         <div class="tab-pane" id="{@title}">
-            <xsl:choose>      
-                <xsl:when test="@title ='update'">                           
-                    <textarea id="order" name="order"></textarea>
-                    <script type="text/javascript">
-                        function update() {
-                        alert(document.getElementById('order').value + "\n"+
-                        document.getElementById("order-href").href;
-                        }
-                    </script>
-                </xsl:when>
-                <xsl:when test="@title = 'cancel'">                    
-                    <script type="text/javascript">
-                        function cancel() {
-                        alert("cancel");
-                        }
-                    </script>
-                </xsl:when>
-                <xsl:when test="@title = 'pay'">
-                    <textarea id="payment" name="payment">
-                        <xsl:value-of select="rb:cost"/>
-                    </textarea>
-                    <script type="text/javascript">
-                        function pay() {
-                        alert(document.getElementById('payment').value + "\n"+
-                        document.getElementById("pay-href").href;
-                        }                        
-                    </script>
-                </xsl:when>
-                <xsl:otherwise>
-                    <p>sonst</p>
-                </xsl:otherwise>
-            </xsl:choose>
             <button id="send" onclick="{@title}();" class="btn btn-success">
                 <xsl:value-of select="@title"/>
             </button>         
@@ -235,28 +237,28 @@
     <xsl:template match="dap:link[@title='self']" mode="nav">
         <li class="active">
             <a href="#self" data-toggle="tab">
-                <i class="icon-refresh"></i>self
+                <i class="icon-refresh"></i> self
             </a>
         </li>
     </xsl:template>
     <xsl:template match="dap:link[@title='update']" mode="nav">
         <li>
             <a href="#update" data-toggle="tab">
-                <i class="icon-pencil"></i>update
+                <i class="icon-pencil"></i> update
             </a>
         </li>
     </xsl:template>
     <xsl:template match="dap:link[@title='cancel']" mode="nav">
         <li>
             <a href="#cancel" data-toggle="tab">
-                <i class="icon-trash"></i>cancel
+                <i class="icon-trash"></i> cancel
             </a>
         </li>
     </xsl:template>
     <xsl:template match="dap:link[@title='pay']" mode="nav">
         <li>
             <a href="#pay" data-toggle="tab">
-                <i class="icon-briefcase"></i>pay
+                <i class="icon-briefcase"></i> pay
             </a>
         </li>
     </xsl:template>
