@@ -135,10 +135,6 @@
         </html>
     </xsl:template>
     
-    <xsl:template match="status">
-      
-    </xsl:template>
-    
     <xsl:template match="rb:order" >            
             <ul>
                 <xsl:apply-templates select="rb:items"/>
@@ -149,10 +145,34 @@
     </xsl:template>
     
     <xsl:template match="rb:order" mode="update">
-        <form action="#" method="post" id="updateOrder">
-            <xsl:apply-templates select="rb:items" mode="update"/>
-            
-            <button type="submit" class="btn">update</button>
+        <form action="{./dap:link[@title='update']/@href}" method="post" 
+              id="updateOrder" class="form-horizontal" 
+              enctype="application/vnd.restbucks+xml">
+            <fieldset>
+                <legend>Items</legend>
+                <xsl:apply-templates select="//rb:items" mode="update"/>
+            </fieldset>
+              
+            <div class="control-group">
+                <label class="control-label" for="location">Location</label>
+                <div class="controls">
+                    <select id="location" name="location">
+                        <option value="TAKE_AWAY">
+                            <xsl:if test="location = 'TAKE_AWAY'">
+                                <xsl:attribute name="checked"/>
+                            </xsl:if>
+                            take away
+                        </option> 
+                        <option value="IN_SHOP">
+                            <xsl:if test="location = 'IN_SHOP'">
+                                <xsl:attribute name="checked"/>
+                            </xsl:if>
+                            in shop
+                        </option> 
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success">update</button>
         </form>
     </xsl:template>
     
@@ -171,6 +191,37 @@
                 <xsl:value-of select="size"/>
             </p>
         </li>
+    </xsl:template>
+    
+    <xsl:template match="rb:items" mode="update">
+        <div class="control-group">
+            <label class="control-label" for="inputName">Name</label>
+            <div class="controls">
+                <input type="text" id="inputName">
+                    <xsl:choose>
+                        <xsl:when test="./name">
+                            <xsl:attribute name="value">
+                                <xsl:value-of select="name"/>
+                            </xsl:attribute>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="placeholder">
+                                provide name ... 
+                            </xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </input>
+            </div>
+        </div> 
+            <p class="quantity">
+                <xsl:value-of select="quantity"/>
+            </p>
+            <p class="milk">
+                <xsl:value-of select="milk"/>
+            </p>
+            <p class="size">
+                <xsl:value-of select="size"/>
+            </p>
     </xsl:template>    
     
     <xsl:template match="dap:link[@title='self']" mode="content">
@@ -215,17 +266,10 @@
     </xsl:template>
      <xsl:template match="dap:link[@title='update']" mode="content">
         <div class="tab-pane" id="update">
-            <p>
-                <xsl:apply-templates select="//rb:order" mode="update"/>
-            </p>
-            <button class="btn" type="button" onclick="updateOrder();">update</button>
-            <script type="text/javascript">
-            function updateOrder() {
-                   alert("updated");
-               }
-        </script>
+            <xsl:apply-templates select="//rb:order" mode="update"/>
         </div>
     </xsl:template>
+    
     <xsl:template match="dap:link" mode="content">                      
         <div class="tab-pane" id="{@title}">
             <button id="send" onclick="{@title}();" class="btn btn-success">
@@ -258,7 +302,7 @@
     <xsl:template match="dap:link[@title='pay']" mode="nav">
         <li>
             <a href="#pay" data-toggle="tab">
-                <i class="icon-briefcase"></i> pay
+                <i class="icon-shopping-cart"></i> pay
             </a>
         </li>
     </xsl:template>
