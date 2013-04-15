@@ -19,7 +19,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                                     <property name="name" value="LATTE"/>
                                     <property name="milk" value="SEMI"/>
                                     <property name="size" value="SMALL"/>
-                                    <property name="quantitiy" value="1"/>
+                                    <property name="quantity" value="1"/>
                                 </bean>
                             </util:list>
                         </property>
@@ -35,7 +35,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                                     <property name="name" value="CAPPUCCINO"/>
                                     <property name="milk" value="SEMI"/>
                                     <property name="size" value="SMALL"/>
-                                    <property name="quantitiy" value="2"/>
+                                    <property name="quantity" value="2"/>
                                 </bean>
                             </util:list>
                         </property>

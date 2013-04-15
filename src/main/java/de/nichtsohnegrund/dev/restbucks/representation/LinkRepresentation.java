@@ -3,6 +3,7 @@ package de.nichtsohnegrund.dev.restbucks.representation;
 import java.net.URI;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * JAX-RS representation for HATEOAS Links.
@@ -10,6 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author <a href="mailto:pgrund">pgrund</a>
  */
 @XmlRootElement(name="link", namespace=Representation.DAP_NAMESPACE)
+@XmlType(name="link", namespace=Representation.DAP_NAMESPACE)
 public class LinkRepresentation {
 
     private String rel;

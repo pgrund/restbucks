@@ -2,12 +2,14 @@ package de.nichtsohnegrund.dev.restbucks.representation;
 
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Abstract class for all JAX-RS representations of restbucks.
  * 
  * @author <a href="mailto:pgrund">pgrund</a>
  */
+@XmlType(name = "restbuck", namespace = Representation.RESTBUCKS_NAMESPACE)
 public abstract class Representation {
 
     /**
@@ -49,4 +51,5 @@ public abstract class Representation {
         }
         return null;
     }
-}
+ }
+

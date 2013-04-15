@@ -9,24 +9,27 @@ import de.nichtsohnegrund.dev.restbucks.model.Payment;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  *
  * @author <a href="mailto:pgrund">pgrund</a>
  */
 @XmlRootElement(name="payment", namespace=Representation.RESTBUCKS_NAMESPACE)
+@XmlType(name="payment", namespace=Representation.RESTBUCKS_NAMESPACE)
 public class PaymentRepresentation extends Representation{
 
     
-    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE)
+    @XmlElement(required = true)
     private double amount;
-    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE)
+    @XmlElement(required = true)
     private String cardholderName;
-    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE)
+    @XmlElement(required = true)
     private String cardNumber;
-    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE)
+    @XmlElement(required = true)
     private int expiryMonth;
-    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE)
+    @XmlElement(required = true)
     private int expiryYear;
     
     public PaymentRepresentation() {}
@@ -40,6 +43,7 @@ public class PaymentRepresentation extends Representation{
         this.links = Arrays.asList(links);
     }
     
+    @XmlTransient
     public Payment getPayment() {
         Payment result = new Payment(amount, cardholderName, cardNumber, 
                 expiryMonth, expiryYear);

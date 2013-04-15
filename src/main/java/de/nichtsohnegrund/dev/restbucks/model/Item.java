@@ -12,12 +12,25 @@ package de.nichtsohnegrund.dev.restbucks.model;
 public class Item {
 
     private Order.Drink name;
-    private int quantitiy;
+    private int quantity;
     private Order.Milk milk;
     private Order.Size size;
     private Order.Shots shots;
     
     public Item(){}
+    
+    public Item(Order.Drink drink, int quantity) {
+        this();
+        this.name = drink;
+        this.quantity = quantity;
+    }
+    public Item(Order.Drink name, int quantity, Order.Milk milk, 
+            Order.Size size, Order.Shots shots) {
+        this(name, quantity);
+        this.milk = milk;
+        this.size = size;
+        this.shots = shots;        
+    }
     
     public Order.Drink getName() {
         return name;
@@ -27,12 +40,12 @@ public class Item {
         this.name = name;
     }
 
-    public int getQuantitiy() {
-        return quantitiy;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setQuantitiy(int quantitiy) {
-        this.quantitiy = quantitiy;
+    public void setQuantity(int quantitiy) {
+        this.quantity = quantitiy;
     }
 
     public Order.Milk getMilk() {

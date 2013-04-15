@@ -1,11 +1,11 @@
 package de.nichtsohnegrund.dev.restbucks.representation;
 
-import de.nichtsohnegrund.dev.restbucks.model.Item;
 import de.nichtsohnegrund.dev.restbucks.model.Order;
 import java.util.Arrays;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * JAX-RS representation for {@link Order}. 
@@ -14,26 +14,22 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author pgrund
  */
 @XmlRootElement(name="order",namespace=Representation.RESTBUCKS_NAMESPACE)
+@XmlType(name = "order", namespace = Representation.RESTBUCKS_NAMESPACE)
 public class OrderRepresentation extends Representation {
 
     
     private String location;
     private String status;
     private Double cost;
-    private List<Item> items;
+    private List<ItemRepresentation> items;
     
     public OrderRepresentation() {}
     
-    public OrderRepresentation(Order order, LinkRepresentation... links) {
-        this();
-        this.location = order.location.name();
-        this.items = order.items;
-        this.cost = order.calculateCosts();
-        this.status = order.status.name();
+    public OrderRepresentation(LinkRepresentation ... links) {
         this.links = Arrays.asList(links);
     }
-
-    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE)
+   
+    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE, required = true)
     public String getLocation() {
         return location;
     }
@@ -42,7 +38,7 @@ public class OrderRepresentation extends Representation {
         this.location = location;
     }
 
-    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE)
+    @XmlElement(required = true)
     public String getStatus() {
         return status;
     }
@@ -51,7 +47,7 @@ public class OrderRepresentation extends Representation {
         this.status = status;
     }
 
-    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE)
+    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE, required=true)
     public Double getCost() {
         return cost;
     }
@@ -61,11 +57,11 @@ public class OrderRepresentation extends Representation {
     }
 
     @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE)
-    public List<Item> getItems() {
+    public List<ItemRepresentation> getItems() {
         return items;
     }
 
-    public void setItems(List<Item> items) {
+    public void setItems(List<ItemRepresentation> items) {
         this.items = items;
     }
     

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="MacRoman"?>
-
 <!--
     Document   : order-html.xsl
     Created on : 16. Dezember 2012, 18:51
@@ -34,13 +33,13 @@
                 <!-- Le styles -->
                 <link href="/css/bootstrap.css" rel="stylesheet"/>
                 <style type="text/css">
-                body {
-                  padding-top: 60px;
-                  padding-bottom: 40px;
-                }
-                .sidebar-nav {
-                  padding: 9px 0;
-                }
+                    body {
+                    padding-top: 60px;
+                    padding-bottom: 40px;
+                    }
+                    .sidebar-nav {
+                    padding: 9px 0;
+                    }
                 </style>
                 <link href="/css/bootstrap-responsive.css" rel="stylesheet"/>
 
@@ -53,65 +52,66 @@
 
             <body>
                 <div class="navbar navbar-fixed-top">
-                  <div class="navbar-inner">
-                    <div class="container-fluid">
-                      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                      </a>
-                      <a class="brand" href="#">Order</a>
-                      <div class="nav-collapse">
-                        <ul class="nav">
-                          <li class="active"><a href="#">Home</a></li>
-                          <li><a href="/relations.html">Relations</a></li>
-                          <li><a href="/model.html">Model</a></li>
-                        </ul>
-                        <p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>
-                      </div><!--/.nav-collapse -->
+                    <div class="navbar-inner">
+                        <div class="container-fluid">
+                            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </a>
+                            <a class="brand" href="#">RESTBucks</a>
+                            <div class="nav-collapse">
+                                <ul class="nav">
+                                    <li>
+                                        <a href="/restbucks.html#">Info</a>
+                                    </li>
+                                    <li>
+                                        <a href="/restbucks.html#model">Model</a>
+                                    </li>
+                                    <li>
+                                        <a href="/restbucks.html#hypermedia">Hypermedia</a>
+                                    </li>
+                                </ul>
+                                <p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>
+                            </div><!--/.nav-collapse -->
+                        </div>
                     </div>
-                  </div>
                 </div>
 
                 <div class="container-fluid">
-                  <div class="row-fluid">
-                    <div class="span3">
-                      <div class="well sidebar-nav">
-                        <ul class="nav nav-list">
-                          <li class="nav-header">Actions Explained</li>
-                          <xsl:for-each select="//dap:link">
-                              <li class="nav-header">
-                                  <a href="{@rel}"><xsl:value-of select="@title"/></a>
-                              </li>
-                          </xsl:for-each>
-                        </ul>
-                      </div><!--/.well -->
-                    </div><!--/span-->
-                    <div class="span9">
-                      <div class="hero-unit">
-                        <h1>RESTBucks Order Information</h1>
-                        <xsl:apply-templates select="//rb:order"/>
-                        <p><a class="btn btn-primary btn-large">Learn more ...</a></p>
-                      </div>
-                      <div class="row-fluid">
-                          <ul class="tabs">
-                            <li><a href="#home" data-toggle="tab">Home</a></li>
-                            <li><a href="#profile" data-toggle="tab">Profile</a></li>
-                            <li><a href="#messages" data-toggle="tab">Messages</a></li>
-                            <li><a href="#ettings" data-toggle="tab">Settings</a></li>
-                            <xsl:apply-templates select="//dap:link" mode="nav"/>
-                          </ul>
-                          <div class="tab-content">
-                            <div class="tab-pane active" id="home">...</div>
-                            <div class="tab-pane" id="profile">...</div>
-                            <div class="tab-pane" id="messages">...</div>
-                            <div class="tab-pane" id="settings">...</div>
-                            <xsl:apply-templates select="//dap:link" mode="content"/>
-                          </div>
+                    <div class="row-fluid">
+                        <div class="span3">
+                            <div class="well sidebar-nav">
+                                <ul class="nav nav-list">
+                                    <li class="nav-header">Available Actions Explained</li>
+                                    <xsl:for-each select="//dap:link">
+                                        <li class="nav-header">
+                                            <a href="{@rel}">
+                                                <xsl:value-of select="@title"/>
+                                            </a>
+                                        </li>
+                                    </xsl:for-each>
+                                </ul>
+                            </div><!--/.well -->
+                        </div><!--/span-->
+                        <div class="span9">
+                            <div class="hero-unit">
+                                <h1>RESTBucks Order Information</h1>                     
+                                <p>
+                                    <a class="btn btn-primary btn-large">Learn more ...</a>
+                                </p>
+                            </div>
+                            <div class="row-fluid tabbable">
+                                <ul class="nav-tabs">
+                                    <xsl:apply-templates select="//dap:link" mode="nav"/>
+                                </ul>
+                                <div class="tab-content">
+                                    <xsl:apply-templates select="//dap:link" mode="content"/>
+                                </div>
                          
-                      </div><!--/row-->
-                    </div><!--/span-->
-                  </div><!--/row-->
+                            </div><!--/row-->
+                        </div><!--/span-->
+                    </div><!--/row-->
                 </div><!--/container-->
 
                 <!-- Le javascript
@@ -166,10 +166,36 @@
         </li>
     </xsl:template>    
     
-    <xsl:template match="dap:link" mode="content">
-         <div class="tab-pane" id="{@title}">
-             <xsl:choose>
-                <xsl:when test="@title = 'update'">
+    <xsl:template match="dap:link[@title='self']" mode="content">
+        <div class="tab-pane active" id="self">
+            <xsl:apply-templates select="//rb:order"/>
+        </div>
+    </xsl:template>
+    
+    <xsl:template match="dap:link[@title='cancel']" mode="content">
+        <div class="tab-pane active" id="cancel">
+            <p>Are you sure you want to cancel/delete this order ?</p>
+            <p>
+                <xsl:apply-templates select="//rb:order"/>
+            </p>
+            <button class="btn" type="button" onclick="deleteOrder();">cancel</button>
+            <script type="text/javascript">
+            function deleteOrder() {
+                $.ajax({
+                    url: document.location,
+                    type: 'DELETE',
+                    context: document.getElementById("cancel")
+                }).done(function() {
+                   alert("deleted");
+                });
+            }
+        </script>
+        </div>
+    </xsl:template>
+    <xsl:template match="dap:link" mode="content">                      
+        <div class="tab-pane" id="{@title}">
+            <xsl:choose>      
+                <xsl:when test="@title ='update'">                           
                     <textarea id="order" name="order"></textarea>
                     <script type="text/javascript">
                         function update() {
@@ -178,17 +204,10 @@
                         }
                     </script>
                 </xsl:when>
-                <xsl:when test="@title = 'cancel'">
+                <xsl:when test="@title = 'cancel'">                    
                     <script type="text/javascript">
                         function cancel() {
                         alert("cancel");
-                        }
-                    </script>
-                </xsl:when>
-                <xsl:when test="@title = 'self'">
-                    <script type="text/javascript">
-                        function self() {
-                        window.location = document.getElementById("self-href").href;
                         }
                     </script>
                 </xsl:when>
@@ -200,35 +219,50 @@
                         function pay() {
                         alert(document.getElementById('payment').value + "\n"+
                         document.getElementById("pay-href").href;
-                        }
+                        }                        
                     </script>
                 </xsl:when>
                 <xsl:otherwise>
-                    sonst
+                    <p>sonst</p>
                 </xsl:otherwise>
             </xsl:choose>
-            <button id="send" onclick="{@title}();">
+            <button id="send" onclick="{@title}();" class="btn btn-success">
                 <xsl:value-of select="@title"/>
-            </button>
-         </div>
+            </button>         
+        </div>
     </xsl:template>
 
-    <xsl:template match="dap:link" mode="nav">
+    <xsl:template match="dap:link[@title='self']" mode="nav">
+        <li class="active">
+            <a href="#self" data-toggle="tab">
+                <i class="icon-refresh"></i>self
+            </a>
+        </li>
+    </xsl:template>
+    <xsl:template match="dap:link[@title='update']" mode="nav">
         <li>
-                <a href="#{@title}" data-toggle="tab">
-                    <xsl:choose>
-                        <xsl:when test="@title">
-                            <xsl:value-of select="@title"/>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:value-of select="substring-after(@rel,'.com/')"/>
-                        </xsl:otherwise>    
-                    </xsl:choose>
-                </a>
+            <a href="#update" data-toggle="tab">
+                <i class="icon-pencil"></i>update
+            </a>
         </li>
-    <!--
-            
+    </xsl:template>
+    <xsl:template match="dap:link[@title='cancel']" mode="nav">
+        <li>
+            <a href="#cancel" data-toggle="tab">
+                <i class="icon-trash"></i>cancel
+            </a>
         </li>
-        -->
+    </xsl:template>
+    <xsl:template match="dap:link[@title='pay']" mode="nav">
+        <li>
+            <a href="#pay" data-toggle="tab">
+                <i class="icon-briefcase"></i>pay
+            </a>
+        </li>
+    </xsl:template>
+    <xsl:template match="dap:link" mode="nav">
+        <li> 
+            <xsl:value-of select="@title"/>             
+        </li>
     </xsl:template>
 </xsl:stylesheet>

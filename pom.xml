@@ -297,6 +297,57 @@
                 </execution>
             </executions>
         </plugin>
+         <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>1.5</version>  
+                <executions>
+                    <execution>
+                        <id>schema-gen</id>
+                        <goals>
+                            <goal>schemagen</goal>
+                        </goals>
+                    </execution>
+                </executions>             
+                <configuration>
+                    <transformSchemas>
+                        <!--
+                            Each schema element defines:
+
+                            a) A <<namespace uri>> for one of your namespaces.
+                               This namespace uri must be unique within the schemas element.
+
+                            b) A <<toPrefix>> that you want to use for the namespace.
+                               Should not contain whitespace or exotic characters.
+                               This yields a namespace definition on the form
+                               <xs:schema ... xmlns:[toPrefix]="[uri]" ... />
+
+                               (I.e: <xs:schema ... xmlns:some="http://some/namespace"
+                                                    xmlns:xs="http://www.w3.org/2001/XMLSchema"> )
+
+                               ... and transforms relevant xml schema elements to use the provided namespace prefix:
+
+                               <some:elementName ... />
+
+                            c) The desired <<toFile>> name of the generated XML schema definition file,
+                               excluding the ".xsd" suffix (which will be added automatically).
+                        -->
+                        <transformSchema>
+                            <uri>http://schemas.restbucks.com</uri>
+                            <toPrefix>rb</toPrefix>
+                            <toFile>restbucks.xsd</toFile>
+                        </transformSchema>
+                        <transformSchema>
+                            <uri>http://schemas.restbucks.com/dap</uri>
+                            <toPrefix>dap</toPrefix>
+                            <toFile>restbucks-dap.xsd</toFile>
+                        </transformSchema>
+                    </transformSchemas>
+                    <includes>
+                        <include>**/representation/*.java</include>
+                    </includes>
+                </configuration>
+          </plugin>
         </plugins>
     </build>
 </project>

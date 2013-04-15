@@ -3,6 +3,7 @@ package de.nichtsohnegrund.dev.restbucks.model;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlEnumValue;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  *

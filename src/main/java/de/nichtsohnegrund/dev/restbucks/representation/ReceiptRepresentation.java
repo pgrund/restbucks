@@ -11,15 +11,17 @@ import java.util.Date;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  *
  * @author <a href="mailto:pgrund">pgrund</a>
  */
 @XmlRootElement(name="receipt", namespace=Representation.RESTBUCKS_NAMESPACE)
+@XmlType(name="receipt", namespace=Representation.RESTBUCKS_NAMESPACE)
 public class ReceiptRepresentation extends Representation {
 
-    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE)
+    @XmlElement(required = true)
     private Double amount;
     @XmlSchemaType(name="date", namespace=Representation.RESTBUCKS_NAMESPACE)
     private Date paid ;

@@ -31,7 +31,7 @@ public class OrderService {
             System.out.println("null location");
             throw new InvalidOrderException();
         }
-        if(order.items == null || order.items.size() == 0) {
+        if(order.items == null || order.items.isEmpty()) {
             System.out.println("null items");
             throw new InvalidOrderException(); 
         }
@@ -53,7 +53,7 @@ public class OrderService {
             System.out.println("null item.milk");
             throw new InvalidOrderException(); 
         }
-        if(item.getQuantitiy() <=0){
+        if(item.getQuantity() <=0){
             System.out.println("null item.quantity");
             throw new InvalidOrderException(); 
         }
