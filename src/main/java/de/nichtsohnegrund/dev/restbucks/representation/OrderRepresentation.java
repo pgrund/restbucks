@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlType;
  * @see Representation
  * @author pgrund
  */
-@XmlRootElement(name="order",namespace=Representation.RESTBUCKS_NAMESPACE)
+@XmlRootElement(name="order", namespace=Representation.RESTBUCKS_NAMESPACE)
 @XmlType(name = "order", namespace = Representation.RESTBUCKS_NAMESPACE)
 public class OrderRepresentation extends Representation {
 
