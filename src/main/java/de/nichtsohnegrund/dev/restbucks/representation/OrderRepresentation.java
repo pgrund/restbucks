@@ -47,7 +47,7 @@ public class OrderRepresentation extends Representation {
         this.status = status;
     }
 
-    @XmlElement(namespace=Representation.RESTBUCKS_NAMESPACE, required=true)
+    @XmlElement(required=true)
     public Double getCost() {
         return cost;
     }

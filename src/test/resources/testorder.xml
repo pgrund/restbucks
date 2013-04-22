@@ -2,16 +2,16 @@
 <rb:order 
     xmlns:dap="http://schemas.restbucks.com/dap" 
     xmlns:rb="http://schemas.restbucks.com">
-    <dap:link rel="http://relations.restbucks.com/cancel" href="http://localhost:13000/order/1"/>
-    <dap:link rel="http://relations.restbucks.com/payment" href="http://localhost:13000/payment/1"/>
-    <dap:link rel="http://relations.restbucks.com/update" href="http://localhost:13000/order/1"/>
-    <dap:link rel="self" href="http://localhost:13000/order/1"/>
+    <dap:link rel="http://localhost:8080/restbucks.html#relation-cancel" title="cancel" type="application/vnd.restbucks+xml" href="http://localhost:8080/restbucks/order/1"/>
+    <dap:link rel="http://localhost:8080/restbucks.html#relation-payment" title="pay" type="application/vnd.restbucks+xml" href="http://localhost:8080/restbucks/payment/1"/>
+    <dap:link rel="http://localhost:8080/restbucks.html#relation-update" title="update" type="application/vnd.restbucks+xml" href="http://localhost:8080/restbucks/order/1"/>
+    <dap:link rel="http://localhost:8080/restbucks.html#relation-self" title="self" type="application/vnd.restbucks+xml" href="http://localhost:8080/restbucks/order/1"/>
     <rb:cost>2.0</rb:cost>
     <rb:items>
-        <milk>semi</milk>
-        <name>latte</name>
-        <quantitiy>1</quantitiy>
-        <size>small</size>
+        <rb:name>LATTE</rb:name>
+        <rb:quantity>1</rb:quantity>
+        <rb:milk>SEMI</rb:milk>
+        <rb:size>SMALL</rb:size>
     </rb:items>
     <rb:location>TAKE_AWAY</rb:location>
     <rb:status>UNPAID</rb:status>

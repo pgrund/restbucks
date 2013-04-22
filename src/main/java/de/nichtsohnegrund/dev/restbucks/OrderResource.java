@@ -46,7 +46,7 @@ public class OrderResource {
     
     @GET
     @Path("/{orderId}")
-    @Produces(Representation.RESTBUCKS_MEDIATYPE)
+    @Produces({Representation.RESTBUCKS_MEDIATYPE, MediaType.APPLICATION_JSON})
     public Response getOrder(@PathParam("orderId") String orderId)throws Exception{
         try {
             System.out.println(">>" + orderId +"<<");

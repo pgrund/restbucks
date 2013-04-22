@@ -106,8 +106,8 @@
                                     <a href="https://github.com/pgrund/restbucks" class="btn btn-primary btn-mini">goto source ...</a>
                                 </p>
                             </div>
-                            <div class="row-fluid tabbable">
-                                <ul class="nav-tabs">
+                            <div class="row-fluid tabbable tabs-left">
+                                <ul class="nav nav-tabs">
                                     <xsl:apply-templates select="//dap:link" mode="nav"/>
                                 </ul>
                                 <div class="tab-content">

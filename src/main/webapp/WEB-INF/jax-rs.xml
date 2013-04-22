@@ -48,6 +48,7 @@ http://cxf.apache.org/schemas/jaxrs.xsd
         </jaxrs:extensionMappings>
         <jaxrs:providers>
             <ref bean="jaxbXmlProvider"/>
+            <ref bean="jsonProvider"/>
             <ref bean="xsltProvider"/>
         </jaxrs:providers>
     </jaxrs:server>
@@ -70,7 +71,9 @@ http://cxf.apache.org/schemas/jaxrs.xsd
             </util:map>
         </property>
     </bean>
- 
+    <bean id="jsonProvider" class="org.apache.cxf.jaxrs.provider.json.JSONProvider">
+        <property name="ignoreNamespaces" value="true"/>
+    </bean>
   
     <bean id="xsltProvider" class="org.apache.cxf.jaxrs.provider.XSLTJaxbProvider">    
         <property name="outMediaTemplates">
