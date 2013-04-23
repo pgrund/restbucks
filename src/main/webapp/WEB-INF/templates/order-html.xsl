@@ -24,7 +24,7 @@
         <html lang="en">
             <head>
                 <meta charset="utf-8"/>
-                <title>RESTBucks - Order Information</title>
+                <title>RESTBucks - RESTful Coffee Ordering</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                 <meta name="description" content="information about single RESTBucks order"/>
                 <meta name="author" content="RESTBucks system"/>
@@ -85,28 +85,22 @@
 
                 <div class="container-fluid">
                     <div class="row-fluid">
-                        <div class="span3">
+                        <div class="span1">
                             <div class="well sidebar-nav">
                                 <ul class="nav nav-list">
-                                    <li class="nav-header">Available Actions Explained</li>
-                                    <xsl:for-each select="//dap:link">
-                                        <li class="nav-header">
-                                            <a href="{@rel}">
-                                                <xsl:value-of select="@title"/>
-                                            </a>
-                                        </li>
-                                    </xsl:for-each>
+                                    <li class="nav-header">RESTBucks</li>                                    
+                                    <li class="nav-header">
+                                      <a href="https://github.com/pgrund/restbucks">source</a>
+                                    </li>
                                 </ul>
                             </div><!--/.well -->
                         </div><!--/span-->
-                        <div class="span9">
+                        <div class="span11">
                             <div class="hero-unit">
-                                <h1>RESTBucks</h1>
-                                <p>
-                                    <a href="https://github.com/pgrund/restbucks" class="btn btn-primary btn-mini">goto source ...</a>
-                                </p>
+                                <h3>RESTBucks Order</h3>
+                                <xsl:apply-templates select="//rb:order"/>
                             </div>
-                            <div class="row-fluid tabbable tabs-left">
+                            <div class="row-fluid tabbable">
                                 <ul class="nav nav-tabs">
                                     <xsl:apply-templates select="//dap:link" mode="nav"/>
                                 </ul>
@@ -306,8 +300,7 @@
                             </span>
                         </xsl:otherwise>
                     </xsl:choose>
-                </p>    
-                <xsl:apply-templates select="//rb:order"/>
+                </p>                   
             </div>
         </div>
     </xsl:template>
@@ -317,8 +310,7 @@
             <div class="alert" id="alert.cancel">
                 <button type="button" class="close" data-dismiss="alert">x</button>
                 <strong>Warning!</strong> Are you sure you want to cancel/delete this order ?
-            </div>            
-            <xsl:apply-templates select="//rb:order"/>            
+            </div>                     
             <button class="btn" type="button" onclick="deleteOrder();">cancel</button>
             <script type="text/javascript">
             function deleteOrder() {
