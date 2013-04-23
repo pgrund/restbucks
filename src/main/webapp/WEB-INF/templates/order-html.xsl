@@ -85,7 +85,7 @@
 
                 <div class="container-fluid">
                     <div class="row-fluid">
-                        <div class="span1">
+                        <div class="span2">
                             <div class="well sidebar-nav">
                                 <ul class="nav nav-list">
                                     <li class="nav-header">RESTBucks</li>                                    
@@ -95,7 +95,7 @@
                                 </ul>
                             </div><!--/.well -->
                         </div><!--/span-->
-                        <div class="span11">
+                        <div class="span10">
                             <div class="hero-unit">
                                 <h3>RESTBucks Order</h3>
                                 <xsl:apply-templates select="//rb:order"/>
