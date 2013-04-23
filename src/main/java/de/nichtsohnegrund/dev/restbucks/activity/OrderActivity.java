@@ -34,6 +34,11 @@ public class OrderActivity {
                 + identifier.toString());
         
         String relationBase = "http://localhost:8080/restbucks.html#relation-";///Representation.RELATIONS_URI;
+        
+        // self link always present
+        links.add(new LinkRepresentation(Representation.SELF_REL_VALUE,
+                        orderUri, "self", Representation.RESTBUCKS_MEDIATYPE));
+               
         switch (status) {
             case UNPAID:
                 links.add(new LinkRepresentation(relationBase
@@ -43,21 +48,13 @@ public class OrderActivity {
                         + identifier.toString()), "pay", Representation.RESTBUCKS_MEDIATYPE));
                 links.add(new LinkRepresentation(relationBase
                             + "update", orderUri, "update", Representation.RESTBUCKS_MEDIATYPE));
-                links.add(new LinkRepresentation(relationBase + Representation.SELF_REL_VALUE,
-                        orderUri, "self", Representation.RESTBUCKS_MEDIATYPE));
-                break;
-            case PREPARING: 
-                links.add(new LinkRepresentation(Representation.SELF_REL_VALUE,
-                        orderUri, "self", Representation.RESTBUCKS_MEDIATYPE));
                 break;
             case READY:
                 links.add(new LinkRepresentation(relationBase
                             + "receipt", new URI(base + "receipt/"
                         + identifier.toString()), "receipt", Representation.RESTBUCKS_MEDIATYPE));
-                links.add(new LinkRepresentation(relationBase + Representation.SELF_REL_VALUE,
-                        orderUri, "self", Representation.RESTBUCKS_MEDIATYPE));
                 break;
-            case DELIVERED: case CANCELED:
+            case DELIVERED: case CANCELED: case PREPARING: 
                 break;
                 
         }

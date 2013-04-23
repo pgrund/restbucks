@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rb:order 
+    xmlns:dap="http://schemas.restbucks.com/dap" 
+    xmlns:rb="http://schemas.restbucks.com">
+    <rb:cost>2.0</rb:cost>
+    <rb:items>
+        <rb:name>LATTE</rb:name>
+        <rb:quantity>1</rb:quantity>
+        <rb:milk>SEMI</rb:milk>
+        <rb:size>SMALL</rb:size>
+    </rb:items>
+    <rb:location>TAKE_AWAY</rb:location>
+    <rb:status>CANCELED</rb:status>
+</rb:order>
