@@ -1,0 +1,208 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en" xmlns:dap="http://schemas.restbucks.com/dap" xmlns:rb="http://schemas.restbucks.com">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>RESTBucks - Order Information</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="information about single RESTBucks order">
+<meta name="author" content="RESTBucks system">
+<link href="/css/bootstrap.css" rel="stylesheet">
+<style type="text/css">
+                    body {
+                    padding-top: 60px;
+                    padding-bottom: 40px;
+                    }
+                    .sidebar-nav {
+                    padding: 9px 0;
+                    }
+                </style>
+<link href="/css/bootstrap-responsive.css" rel="stylesheet">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+<div class="container-fluid">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="#">RESTBucks</a>
+<div class="nav-collapse">
+<ul class="nav">
+<li>
+<a href="/restbucks.html#">Info</a>
+</li>
+<li>
+<a href="/restbucks.html#model">Model</a>
+</li>
+<li>
+<a href="/restbucks.html#hypermedia">Hypermedia</a>
+</li>
+</ul>
+<p class="navbar-text pull-right">Logged in as <a href="#">username</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+<div class="container-fluid">
+<div class="row-fluid">
+<div class="span3">
+<div class="well sidebar-nav">
+<ul class="nav nav-list">
+<li class="nav-header">Available Actions Explained</li>
+<li class="nav-header">
+<a href="http://localhost:8080/restbucks.html#relation-cancel">cancel</a>
+</li>
+<li class="nav-header">
+<a href="http://localhost:8080/restbucks.html#relation-payment">pay</a>
+</li>
+<li class="nav-header">
+<a href="http://localhost:8080/restbucks.html#relation-update">update</a>
+</li>
+<li class="nav-header">
+<a href="http://localhost:8080/restbucks.html#relation-self">self</a>
+</li>
+</ul>
+</div>
+</div>
+<div class="span9">
+<div class="hero-unit">
+<h1>RESTBucks</h1>
+<p>
+<a href="https://github.com/pgrund/restbucks" class="btn btn-primary btn-mini">goto source ...</a>
+</p>
+</div>
+<div class="row-fluid tabbable">
+<ul class="nav-tabs">
+<li>
+<a href="#cancel" data-toggle="tab"><i class="icon-trash"></i> cancel
+            </a>
+</li>
+<li>
+<a href="#pay" data-toggle="tab"><i class="icon-shopping-cart"></i> pay
+            </a>
+</li>
+<li>
+<a href="#update" data-toggle="tab"><i class="icon-pencil"></i> update
+            </a>
+</li>
+<li class="active">
+<a href="#self" data-toggle="tab"><i class="icon-refresh"></i> self
+            </a>
+</li>
+</ul>
+<div class="tab-content">
+<div class="tab-pane" id="cancel">
+<div class="alert" id="alert.cancel">
+<button type="button" class="close" data-dismiss="alert">x</button><strong>Warning!</strong> Are you sure you want to cancel/delete this order ?
+            </div>
+<ul>
+<li class="item">
+<p class="name">LATTE</p>
+<p class="quantity">1</p>
+<p class="milk">SEMI</p>
+<p class="size">SMALL</p>
+</li>
+</ul>
+<p class="location">TAKE_AWAY</p>
+<button class="btn" type="button" onclick="deleteOrder();">cancel</button><script type="text/javascript">
+            function deleteOrder() {
+                $.ajax({
+                    url: 'http://localhost:8080/restbucks/order/1',
+                    type: 'DELETE',
+                    context: document.getElementById("cancel")
+                }).done(function() {
+                    $("#alert\\.cancel").text("resource deleted").addClass("alert-success");
+                }).fail(function(jqXHR, textStatus, errorThrown){
+                    $("#alert\\.cancel").text(textStatus).addClass("alert-error").prepend('<button type="button" class="close" data-dismiss="alert">x</button><strong>Error!</strong> ');
+                });
+            }
+        </script>
+</div>
+<div class="tab-pane" id="pay">
+<button id="send" onclick="pay();" class="btn btn-success">pay</button>
+</div>
+<div class="tab-pane" id="update">
+<form action="http://localhost:8080/restbucks/order/1" method="post" id="updateOrder" class="form-horizontal">
+<fieldset>
+<legend>Items</legend>
+<div class="control-group">
+<label class="control-label" for="name">Name</label>
+<div class="controls">
+<select id="name" name="name"><option value="ESPRESSO">
+                        espresso
+                    </option><option value="LATTE" selected>
+                        latte
+                    </option><option value="CAPUCCINO">
+                        capuccino
+                    </option><option value="FLAT_WHITE">
+                        flat white
+                    </option></select>
+</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="quantity">Quantity</label>
+<div class="controls">
+<input type="number" min="1" id="quantity" name="quantity" value="1">
+</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="milk">Milk</label>
+<div class="controls">
+<select id="milk" name="milk"><option value="SEMI" selected>
+                            semi milk
+                        </option><option value="SKIM">
+                            skim milk
+                        </option><option value="WHOLE">
+                            whole milk
+                        </option></select>
+</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="size">Size</label>
+<div class="controls">
+<select id="size" name="size"><option value="SMALL" selected>
+                            small
+                        </option><option value="MEDIUM">
+                            medium
+                        </option><option value="LARGE">
+                            large
+                        </option></select>
+</div>
+</div>
+</fieldset>
+<div class="control-group">
+<label class="control-label" for="location">Location</label>
+<div class="controls">
+<select id="location" name="location"><option value="TAKE_AWAY">
+                            take away
+                        </option><option value="IN_SHOP">
+                            in shop
+                        </option></select>
+</div>
+</div>
+<button type="submit" class="btn btn-success">update</button>
+</form>
+</div>
+<div class="tab-pane active" id="self">
+<div class="order">
+<p class="status">
+                            Your order is awaiting payment. <br> You may also <a href="#cancel" data-toggle="tab">cancel</a> your order completely.
+                        </p>
+<ul>
+<li class="item">
+<p class="name">LATTE</p>
+<p class="quantity">1</p>
+<p class="milk">SEMI</p>
+<p class="size">SMALL</p>
+</li>
+</ul>
+<p class="location">TAKE_AWAY</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script src="/js/jquery.js"></script><script src="/js/bootstrap-transition.js"></script><script src="/js/bootstrap-alert.js"></script><script src="/js/bootstrap-modal.js"></script><script src="/js/bootstrap-dropdown.js"></script><script src="/js/bootstrap-scrollspy.js"></script><script src="/js/bootstrap-tab.js"></script><script src="/js/bootstrap-tooltip.js"></script><script src="/js/bootstrap-popover.js"></script><script src="/js/bootstrap-button.js"></script><script src="/js/bootstrap-collapse.js"></script><script src="/js/bootstrap-carousel.js"></script><script src="/js/bootstrap-typeahead.js"></script>
+</body>
+</html>
