@@ -31,6 +31,24 @@
         <link rel="apple-touch-icon" sizes="72x72" href="/static/images/apple-touch-icon-72x72.png"/>
         <link rel="apple-touch-icon" sizes="114x114" href="/static/images/apple-touch-icon-114x114.png"/>
         -->
+        <script type="text/javascript" th:inline="javascript">
+            function cancel(url) {
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    context: document.getElementById("cancel")
+                }).done(function () {
+                    $("#alert\\.cancel").text("resource deleted, page update in 5 sec ..").addClass("alert-success");
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    $("#alert\\.cancel").text(textStatus).addClass("alert-error").prepend('<button type="button" class="close" data-dismiss="alert">x</button><strong>Error!</strong> ');
+                });
+                window.setTimeout(self(url), 5000);
+            }
+
+            function self(url) {
+                window.location.reload();
+            }
+        </script>
     </head>
 
     <body>
@@ -164,73 +182,58 @@
                     <div class="row-fluid tabbable">
                         <ul class="nav nav-tabs">
                             <th:block th:each="link : ${links}">
-                            <li class="active" th:attr="class=((${link.getRel()} == 'self') ? 'active')">
-                                <a href="#self" th:href="'#'+${link.getRel()}" data-toggle="tab">
-                                    <i th:attr="class='icon-' +((${link.getRel()} == 'update') ? 'pencil' : ((${link.getRel()} == 'cancel') ? 'trash' : ((${link.getRel()} == 'pay') ? 'shopping-cart' : 'refresh' )))" class="icon-trash"></i>
-                                    <span th:text="${link.getRel()}">self</span>
-                                </a>
-                            </li>
+                                <li class="active" th:attr="class=((${link.getRel()} == 'self') ? 'active')">
+                                    <a href="#self" th:href="'#'+${link.getRel()}" data-toggle="tab">
+                                        <i th:attr="class='icon-' +((${link.getRel()} == 'update') ? 'pencil' : ((${link.getRel()} == 'cancel') ? 'trash' : ((${link.getRel()} == 'pay') ? 'shopping-cart' : 'refresh' )))" class="icon-trash"></i>
+                                        <span th:text="${link.getRel()}">self</span>
+                                    </a>
+                                </li>
                             </th:block>
                         </ul>
                         <div class="tab-content">
-                                 <div th:each="link : ${links}" id="self" class="tab-pane active" th:attr="id=${link.getRel()},class='tab-pane' + ((${link.getRel()} == 'self' ? ' active' : ''))">
-                               
-                                
-                                    <div th:if="${link.getRel()} == 'self'" class="order" th:switch="${order.getStatus().toString()}">
-                                        <p class="status" th:case="UNPAID">Your order is awaiting payment. <br/> You may also <a href="#cancel" data-toggle="tab">cancel</a> your order completely.</p>
+                            <div th:each="link : ${links}" id="self" class="tab-pane active" th:attr="id=${link.getRel()},class='tab-pane' + ((${link.getRel()} == 'self' ? ' active' : ''))">
 
-                                        <p class="alert" th:case="*" th:text="${order.getStatus().toString()}">status</p>
-                                    </div>
-                                     <th:block th:if="${link.getRel()} == 'cancel'" >
+
+                                <div th:if="${link.getRel()} == 'self'" class="order" th:switch="${order.getStatus().toString()}">
+                                    <p class="status" th:case="UNPAID">Your order is awaiting payment. <br/> You may also <a href="#cancel" data-toggle="tab">cancel</a> your order completely.</p>
+
+                                    <p class="alert" th:case="*" th:text="${order.getStatus().toString()}">status</p>
+                                </div>
+                                <th:block th:if="${link.getRel()} == 'cancel'" >
                                     <div class="alert" id="alert.cancel">
                                         <button type="button" class="close" data-dismiss="alert">x</button>
                                         <strong>Warning!</strong> Are you sure you want to cancel/delete this order ?
                                     </div>                     
-                                    <script type="text/javascript" th:inline="javascript">
-                                        function deleteOrder() {
-                                            $.ajax({
-                                                url: [[${link.getHref()}]],
-                                                type: 'DELETE',
-                                                context: document.getElementById("cancel")
-                                            }).done(function () {
-                                                console.log('done');
-                                                $("#alert.cancel").text("resource deleted").addClass("alert-success");
-                                            }).fail(function (jqXHR, textStatus, errorThrown) {
-                                                console.log('failed');
-                                                $("#alert.cancel").text(textStatus).addClass("alert-error").prepend('<button type="button" class="close" data-dismiss="alert">x</button><strong>Error!</strong> ');
-                                            });
-                                        }
-                                    </script>
-                                    <button class="btn" type="button" onclick="deleteOrder();">cancel order</button>
-                                    
-                                     </th:block>
-                                    <button th:if="${link.getRel()} != 'cancel'" id="send" onclick="self();" th:attr="onclick=${link.getRel()}+'()'" class="btn btn-success" th:text="${link.getRel()}">
-                                        self
-                                    </button>         
-                                </div>
-                            
-                        </div>
-                        </div><!--/row-->
-                    </div><!--/span-->
-                </div><!--/row-->
-            </div><!--/container-->
 
-            <!-- Le javascript
-            ================================================== -->
-            <!-- Placed at the end of the document so the pages load faster -->
-            <script src="/static/js/jquery.js" th:src="@{/js/jquery.js}"></script>
-            <script src="/static/js/bootstrap-transition.js" th:src="@{/js/bootstrap-transition.js}"></script>
-            <script src="/static/js/bootstrap-alert.js" th:src="@{/js/bootstrap-alert.js}"></script>
-            <script src="/static/js/bootstrap-modal.js" th:src="@{/js/bootstrap-modal.js}"></script>
-            <script src="/static/js/bootstrap-dropdown.js" th:src="@{/js/bootstrap-dropdown.js}"></script>
-            <script src="/static/js/bootstrap-scrollspy.js" th:src="@{/js/bootstrap-scrollspy.js}"></script>
-            <script src="/static/js/bootstrap-tab.js" th:src="@{/js/bootstrap-tab.js}"></script>
-            <script src="/static/js/bootstrap-tooltip.js" th:src="@{/js/bootstrap-tooltip.js}"></script>
-            <script src="/static/js/bootstrap-popover.js" th:src="@{/js/bootstrap-popover.js}"></script>
-            <script src="/static/js/bootstrap-button.js" th:src="@{/js/bootstrap-button.js}"></script>
-            <script src="/static/js/bootstrap-collapse.js" th:src="@{/js/bootstrap-collapse.js}"></script>
-            <script src="/static/js/bootstrap-carousel.js" th:src="@{/js/bootstrap-carousel.js}"></script>
-            <script src="/static/js/bootstrap-typeahead.js" th:src="@{/js/bootstrap-typeahead.js}"></script>
+
+                                </th:block>
+                                <button id="send" onclick="self();" th:attr="onclick=${link.getRel()}+'(\''+${link.getHref()}+'\')'" class="btn btn-success" th:text="${link.getRel()}">
+                                    self
+                                </button>         
+                            </div>
+
+                        </div>
+                    </div><!--/row-->
+                </div><!--/span-->
+            </div><!--/row-->
+        </div><!--/container-->
+
+        <!-- Le javascript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="/static/js/jquery.js" th:src="@{/js/jquery.js}"></script>
+        <script src="/static/js/bootstrap-transition.js" th:src="@{/js/bootstrap-transition.js}"></script>
+        <script src="/static/js/bootstrap-alert.js" th:src="@{/js/bootstrap-alert.js}"></script>
+        <script src="/static/js/bootstrap-modal.js" th:src="@{/js/bootstrap-modal.js}"></script>
+        <script src="/static/js/bootstrap-dropdown.js" th:src="@{/js/bootstrap-dropdown.js}"></script>
+        <script src="/static/js/bootstrap-scrollspy.js" th:src="@{/js/bootstrap-scrollspy.js}"></script>
+        <script src="/static/js/bootstrap-tab.js" th:src="@{/js/bootstrap-tab.js}"></script>
+        <script src="/static/js/bootstrap-tooltip.js" th:src="@{/js/bootstrap-tooltip.js}"></script>
+        <script src="/static/js/bootstrap-popover.js" th:src="@{/js/bootstrap-popover.js}"></script>
+        <script src="/static/js/bootstrap-button.js" th:src="@{/js/bootstrap-button.js}"></script>
+        <script src="/static/js/bootstrap-collapse.js" th:src="@{/js/bootstrap-collapse.js}"></script>
+        <script src="/static/js/bootstrap-carousel.js" th:src="@{/js/bootstrap-carousel.js}"></script>
+        <script src="/static/js/bootstrap-typeahead.js" th:src="@{/js/bootstrap-typeahead.js}"></script>
 
     </body>
 </html>

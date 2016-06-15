@@ -22,7 +22,6 @@ import uk.co.grund.dev.restbucks.exceptions.NoSuchOrderException;
 import uk.co.grund.dev.restbucks.exceptions.OrderDeletionException;
 import uk.co.grund.dev.restbucks.model.Order;
 import uk.co.grund.dev.restbucks.model.Payment;
-import uk.co.grund.dev.restbucks.model.Receipt;
 
 /**
  * JAX-RS Resource for {@link OrderRepresentation}.
@@ -52,12 +51,12 @@ public class OrderController {
             value = "/{orderId}",
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public HttpEntity<Resource<Order>> getOrder(@PathVariable("orderId") String orderId)
+    public Resource<Order> getOrder(@PathVariable("orderId") String orderId)
             throws NoSuchOrderException {
 
         LOG.log(Level.INFO, ">>{0}<<", orderId);
         try {
-            return new ResponseEntity<>(getResource(service.readOrder(Long.parseLong(orderId))), HttpStatus.OK);
+            return getResource(service.readOrder(Long.parseLong(orderId)));
         } catch (NumberFormatException nfe) {
             throw new NoSuchOrderException();
         }
@@ -89,14 +88,16 @@ public class OrderController {
     }
 
     @RequestMapping(
-            value = "/{orderId}",
+            path = "/{orderId}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public void removeOrder(@PathVariable("orderId") String orderId)
+    public HttpEntity removeOrder(@PathVariable("orderId") String orderId)
             throws OrderDeletionException, NoSuchOrderException {
+        LOG.log(Level.INFO, "deleting order {0} ...", orderId);
         service.deleteOrder(Long.parseLong(orderId));
         LOG.log(Level.INFO, "successfully deleted order {0}", orderId);
+        return new ResponseEntity( HttpStatus.OK);
     }
 
     @RequestMapping(
@@ -129,26 +130,26 @@ public class OrderController {
                         .withRel("update")
                 );
                 try {
-                     result.add(ControllerLinkBuilder.linkTo(
-                             ReceiptController.class.getMethod("payOrder", String.class, Payment.class),
-                             order.id)
-                             .withRel("pay")
-                     );
+                    result.add(ControllerLinkBuilder.linkTo(
+                            ReceiptController.class.getMethod("payOrder", String.class, Payment.class),
+                            order.id)
+                            .withRel("pay")
+                    );
                 } catch (NoSuchMethodException nsme) {
                     LOG.log(Level.SEVERE, "invalid refernece to method", nsme);
                 }
                 break;
             case READY:
                 try {
-                     result.add(ControllerLinkBuilder.linkTo(
-                             ReceiptController.class.getMethod("getReceiptForOrder", Long.class),
-                             order.id)
-                             .withRel("receipt")
-                     );
+                    result.add(ControllerLinkBuilder.linkTo(
+                            ReceiptController.class.getMethod("getReceiptForOrder", Long.class),
+                            order.id)
+                            .withRel("receipt")
+                    );
                 } catch (NoSuchMethodException nsme) {
                     LOG.log(Level.SEVERE, "invalid refernece to method", nsme);
                 }
-                
+
                 break;
             case DELIVERED:
             case CANCELED:
