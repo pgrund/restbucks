@@ -39,10 +39,11 @@
                     context: document.getElementById("cancel")
                 }).done(function () {
                     $("#alert\\.cancel").text("resource deleted, page update in 5 sec ..").addClass("alert-success");
+                    window.setTimeout(function () {self(url);}, 5000);
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     $("#alert\\.cancel").text(textStatus).addClass("alert-error").prepend('<button type="button" class="close" data-dismiss="alert">x</button><strong>Error!</strong> ');
                 });
-                window.setTimeout(self(url), 5000);
+              
             }
 
             function self(url) {
