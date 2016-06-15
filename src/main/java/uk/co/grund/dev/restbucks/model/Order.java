@@ -3,7 +3,6 @@ package uk.co.grund.dev.restbucks.model;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlEnumValue;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  *
@@ -69,6 +68,18 @@ public class Order {
         public double getPrice() {
             return this.price;
         }
+        public boolean isEspresso() {
+            return this == ESPRESSO;
+        }
+        public boolean isLatte() {
+            return this == LATTE;
+        }
+        public boolean isCappuccino() {
+            return this == CAPPUCCINO;
+        }
+        public boolean isFlatWhite() {
+            return this == FLAT_WHITE;
+        }
     }
 
     public enum Milk {
@@ -79,6 +90,16 @@ public class Order {
         SEMI,
         @XmlEnumValue(value = "whole")
         WHOLE;
+        
+        public boolean isSkim(){
+            return this == SKIM;
+        }
+        public boolean isSemi(){
+            return this == SEMI;
+        }
+        public boolean isWhole(){
+            return this == WHOLE;
+        }
     }
 
     public enum Size {
@@ -89,6 +110,16 @@ public class Order {
         MEDIUM, 
         @XmlEnumValue(value = "large")
         LARGE;
+        
+        public boolean isSmall(){
+            return this == SMALL;
+        }
+        public boolean isMedium(){
+            return this == MEDIUM;
+        }
+        public boolean isLarge(){
+            return this == LARGE;
+        }
     }
 
     public enum Shots {
@@ -98,5 +129,15 @@ public class Order {
         DOUBLE, 
         @XmlEnumValue(value = "triple")
         TRIPLE;
+        
+        public boolean isSingle() {
+            return this == SINGLE;
+        }
+        public boolean isDouble(){
+            return this == DOUBLE;
+        }
+        public boolean isTriple(){
+            return this == TRIPLE;
+        }
     }
 }

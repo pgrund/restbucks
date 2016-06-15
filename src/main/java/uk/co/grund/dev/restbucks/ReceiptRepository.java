@@ -15,20 +15,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.springframework.stereotype.Repository;
+import uk.co.grund.dev.restbucks.exceptions.NoSuchReceiptException;
 
 /**
  *
  * @author <a href="mailto:pgrund">pgrund</a>
  */
 @Repository
-public class PaymentService {
+public class ReceiptRepository {
     
-    private final static Logger LOG = Logger.getLogger(PaymentService.class.getName());
+    private final static Logger LOG = Logger.getLogger(ReceiptRepository.class.getName());
      
     private OrderRepository orderService;
     private final Map<Long, Receipt> allReceipts = new HashMap<>();
 
-    public PaymentService() {
+    public ReceiptRepository() {
     }
 
     
@@ -68,10 +69,10 @@ public class PaymentService {
         return payment;
     }
     
-    public Receipt getReceiptForOrder(Long orderId) throws PaymentException {
+    public Receipt getReceiptForOrder(Long orderId) throws NoSuchReceiptException {
         Receipt result = allReceipts.get(orderId);
         if(result == null) {
-            throw new PaymentException();
+            throw new NoSuchReceiptException();
         }
         
         return result;

@@ -16,4 +16,26 @@ public enum Location {
     TAKE_AWAY,
     @XmlEnumValue(value="inShop")
     IN_SHOP;
+    
+    public boolean isTakeAway() {
+        return this == TAKE_AWAY;
+    }
+    public boolean isInShop() {
+        return this == IN_SHOP;
+    }
+
+    @Override
+    public String toString() {
+        switch (this) {
+            case TAKE_AWAY:
+                return "TAKE_AWAY";
+            case IN_SHOP:
+                return "IN_SHOP";
+            default:
+                return null;
+        }
+        
+    }
+    
+    
 }

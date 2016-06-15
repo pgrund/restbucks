@@ -21,4 +21,24 @@ public enum OrderStatus {
   DELIVERED,
   @XmlEnumValue(value="canceled")
   CANCELED;
+  
+  public boolean isUnpaid() {
+      return isEnum(OrderStatus.UNPAID);
+  }
+  public boolean isPreparing(){
+      return isEnum(OrderStatus.PREPARING);
+  }
+  public boolean isReady(){
+      return isEnum(OrderStatus.READY);
+  }
+  public boolean isDelivered(){
+      return isEnum(OrderStatus.DELIVERED);
+  }
+  public boolean isCanceled(){
+      return isEnum(OrderStatus.CANCELED);
+  }
+  
+  private boolean isEnum(OrderStatus status) {
+      return this == status;
+  }
 }

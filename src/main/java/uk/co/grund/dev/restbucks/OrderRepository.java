@@ -39,6 +39,7 @@ public class OrderRepository {
                     o.id = id;
                     o.status = OrderStatus.UNPAID;
                     o.location = (id < 2 ? Location.IN_SHOP : Location.TAKE_AWAY );
+                    o.items.add(new Item(Order.Drink.LATTE, 5, Order.Milk.SKIM, Order.Size.SMALL, Order.Shots.SINGLE));
                     return o;
                 }).collect(Collectors.toMap(o -> o.id, Function.identity())));
     }
