@@ -29,6 +29,6 @@ public class RestbuckApplication {
 
     @Bean
     public CurieProvider curieProvider() {
-        return new DefaultCurieProvider("rb", new UriTemplate("/static/rels/{rel}"));
+        return new DefaultCurieProvider("rb", new UriTemplate("/restbucks.html#{rel}"));
     }
 }

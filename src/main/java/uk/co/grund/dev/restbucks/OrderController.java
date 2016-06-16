@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import uk.co.grund.dev.restbucks.exceptions.InvalidOrderException;
 import uk.co.grund.dev.restbucks.exceptions.NoSuchOrderException;
 import uk.co.grund.dev.restbucks.exceptions.OrderDeletionException;
@@ -31,7 +32,7 @@ import uk.co.grund.dev.restbucks.model.Payment;
  *
  * @author <a href="mailto:pgrund">pgrund</a>
  */
-@Controller
+@RestController
 @RequestMapping(value = "/orders")
 @ExposesResourceFor(Order.class)
 public class OrderController {
@@ -48,9 +49,9 @@ public class OrderController {
     }
 
     @RequestMapping(
-            value = "/{orderId}",
+            path = "/{orderId}",
             method = RequestMethod.GET,
-            produces = {MediaType.APPLICATION_JSON_VALUE})
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, "application/hal+json"})
     public Resource<Order> getOrder(@PathVariable("orderId") String orderId)
             throws NoSuchOrderException {
 
@@ -62,7 +63,7 @@ public class OrderController {
         }
 
     }
-
+/*
     @RequestMapping(
             path = "/{orderId}",
             method = RequestMethod.GET,
@@ -77,7 +78,7 @@ public class OrderController {
         model.addAttribute("links", getResource(order).getLinks());
         return "singleorder";
     }
-
+*/
     @RequestMapping(
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
