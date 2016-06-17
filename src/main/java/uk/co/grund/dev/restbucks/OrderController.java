@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.co.grund.dev.restbucks.exceptions.InvalidOrderException;
 import uk.co.grund.dev.restbucks.exceptions.NoSuchOrderException;
@@ -32,7 +33,7 @@ import uk.co.grund.dev.restbucks.model.Payment;
  *
  * @author <a href="mailto:pgrund">pgrund</a>
  */
-@RestController
+@Controller
 @RequestMapping(value = "/orders")
 @ExposesResourceFor(Order.class)
 public class OrderController {
@@ -52,7 +53,7 @@ public class OrderController {
             path = "/{orderId}",
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, "application/hal+json"})
-    public Resource<Order> getOrder(@PathVariable("orderId") String orderId)
+    public @ResponseBody Resource<Order> getOrder(@PathVariable("orderId") String orderId)
             throws NoSuchOrderException {
 
         LOG.log(Level.INFO, ">>{0}<<", orderId);
@@ -63,28 +64,24 @@ public class OrderController {
         }
 
     }
-/*
+
     @RequestMapping(
             path = "/{orderId}",
             method = RequestMethod.GET,
             produces = MediaType.TEXT_HTML_VALUE
     )
-    public String getOrderAsHTML(@PathVariable("orderId") String orderId, Model model)
+    public String getOrderAsHTML(@PathVariable("orderId") String orderId)
             throws NoSuchOrderException {
         LOG.log(Level.INFO, "entering html for order {0}", orderId);
-        Order order = this.service.readOrder(Long.parseLong(orderId));
-
-        model.addAttribute("order", order);
-        model.addAttribute("links", getResource(order).getLinks());
-        return "singleorder";
+        return "/index.html";
     }
-*/
+
     @RequestMapping(
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Resource<Order> createOrder(Order order) throws InvalidOrderException {
+    public @ResponseBody Resource<Order> createOrder(Order order) throws InvalidOrderException {
         return getResource(service.createOrder(order));
     }
 
@@ -93,7 +90,7 @@ public class OrderController {
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public HttpEntity removeOrder(@PathVariable("orderId") String orderId)
+    public @ResponseBody HttpEntity removeOrder(@PathVariable("orderId") String orderId)
             throws OrderDeletionException, NoSuchOrderException {
         LOG.log(Level.INFO, "deleting order {0} ...", orderId);
         service.deleteOrder(Long.parseLong(orderId));
@@ -107,7 +104,7 @@ public class OrderController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Resource<Order> updateOrder(@PathVariable("orderId") String orderId,
+    public @ResponseBody Resource<Order> updateOrder(@PathVariable("orderId") String orderId,
             Order order) throws NoSuchOrderException, InvalidOrderException {
 
         return getResource(service.updateOrder(order,

@@ -13,7 +13,7 @@
         <![endif]-->
 
         <!-- styles -->
-        <link href="./css/bootstrap.css" rel="stylesheet"/>
+        <link href="/css/bootstrap.css" rel="stylesheet"/>
         <style type="text/css">
             body {
                 padding-top: 60px;
@@ -23,7 +23,7 @@
                 padding: 9px 0;
             }
         </style>
-        <link href="./css/bootstrap-responsive.css" rel="stylesheet"/>
+        <link href="/css/bootstrap-responsive.css" rel="stylesheet"/>
 
         <!-- fav and touch icons 
         <link rel="shortcut icon" href="./images/favicon.ico"/>
@@ -33,50 +33,51 @@
         -->
         <script type="text/javascript">
             function nameTmpl(idx, value) {
-               return '<div class="control-group"> ' +
-                   '<label class="control-label" for="'+idx+'-name">Name</label>' +
-                   '<div class="controls">' +
-                        '<select id="'+idx+'-name" name="'+idx+'-name"> ' +
-                        '<option value="ESPRESSO"'+(value === 'ESPRESSO'?' selected':'')+'>espresso</option>' +
-                        '<option value="LATTE"'+(value === 'LATTE'?' selected':'')+'>latte</option> ' +
-                        '<option value="CAPUCCINO"'+(value === 'CAPUCCINO'?' selected':'')+'>capuccino</option>' +
-                        '<option value="FLAT_WHITE"'+(value === 'FLAT_WHITE'?' selected':'')+'>flat white</option> ' +
+                return '<div class="control-group"> ' +
+                        '<label class="control-label" for="' + idx + '-name">Name</label>' +
+                        '<div class="controls">' +
+                        '<select id="' + idx + '-name" name="' + idx + '-name"> ' +
+                        '<option value="ESPRESSO"' + (value === 'ESPRESSO' ? ' selected' : '') + '>espresso</option>' +
+                        '<option value="LATTE"' + (value === 'LATTE' ? ' selected' : '') + '>latte</option> ' +
+                        '<option value="CAPUCCINO"' + (value === 'CAPUCCINO' ? ' selected' : '') + '>capuccino</option>' +
+                        '<option value="FLAT_WHITE"' + (value === 'FLAT_WHITE' ? ' selected' : '') + '>flat white</option> ' +
                         '</select> ' +
-                   '</div>' +
-                '</div>';
+                        '</div>' +
+                        '</div>';
             }
             function quantityTmpl(idx, value) {
-               return '<div class="control-group">' +
-                    '<label class="control-label" for="'+idx+'-quantity">Quantity</label>' +
-                    '<div class="controls">' +
-                    '<input type="number" min="1" id="'+idx+'-quantity" name="'+idx+'-quantity" value="'+value+'" size="4"/>' +
-                    '</div>' +
-                    '</div> ';
-        }
-           function milkTmpl(idx, value) {
-               return '<div class="control-group">' +
-                    '<label class="control-label" for="'+idx+'-milk">Milk</label>' +
-                    '<div class="controls">' +
-                    '<select id="'+idx+'-milk" name="'+idx+'-milk">' +
-                    '<option value="SEMI"'+(value === 'SEMI'?' selected':'')+'>semi milk</option> ' +
-                    '<option value="SKIM"'+(value === 'SKIM'?' selected':'')+'>skim milk</option> ' +
-                    '<option value="WHOLE"'+(value === 'WHOLE'?' selected':'')+'>whole milk</option> ' +
-                    '</select>' +
-                    '</div>'
-            '</div> ';
-        }
+                return '<div class="control-group">' +
+                        '<label class="control-label" for="' + idx + '-quantity">Quantity</label>' +
+                        '<div class="controls">' +
+                        '<input type="number" min="1" id="' + idx + '-quantity" name="' + idx + '-quantity" value="' + value + '" size="4"/>' +
+                        '</div>' +
+                        '</div> ';
+            }
+            function milkTmpl(idx, value) {
+                return '<div class="control-group">' +
+                        '<label class="control-label" for="' + idx + '-milk">Milk</label>' +
+                        '<div class="controls">' +
+                        '<select id="' + idx + '-milk" name="' + idx + '-milk">' +
+                        '<option value="SEMI"' + (value === 'SEMI' ? ' selected' : '') + '>semi milk</option> ' +
+                        '<option value="SKIM"' + (value === 'SKIM' ? ' selected' : '') + '>skim milk</option> ' +
+                        '<option value="WHOLE"' + (value === 'WHOLE' ? ' selected' : '') + '>whole milk</option> ' +
+                        '</select>' +
+                        '</div>'
+                '</div> ';
+            }
             function sizeTmpl(idx, value) {
-                    return '<div class="control-group">' +
-                    '<label class="control-label" for="'+idx+'-size">Size</label>' +
-                    '<div class="controls">' +
-                    '<select id="'+idx+'-size" name="'+idx+'-size">' +
-                    '<option value="SMALL"'+(value === 'SMALL'?' selected':'')+'>small</option> ' +
-                    '<option value="MEDIUM"'+(value === 'MEDIUM'?' selected':'')+'>medium</option>' +
-                    '<option value="LARGE"'+(value === 'LARGE'?' selected':'')+'>large</option>' +
-                    '</select>' +
-                    '</div>' +
-                    '</div>';
-        }
+                return '<div class="control-group">' +
+                        '<label class="control-label" for="' + idx + '-size">Size</label>' +
+                        '<div class="controls">' +
+                        '<select id="' + idx + '-size" name="' + idx + '-size">' +
+                        '<option value="SMALL"' + (value === 'SMALL' ? ' selected' : '') + '>small</option> ' +
+                        '<option value="MEDIUM"' + (value === 'MEDIUM' ? ' selected' : '') + '>medium</option>' +
+                        '<option value="LARGE"' + (value === 'LARGE' ? ' selected' : '') + '>large</option>' +
+                        '</select>' +
+                        '</div>' +
+                        '</div>';
+            }
+
             function cancel(url) {
                 $.ajax({
                     url: url,
@@ -88,7 +89,11 @@
                         self(url);
                     }, 5000);
                 }).fail(function (jqXHR, textStatus, errorThrown) {
-                    $("#alert\\.cancel").text(textStatus).addClass("alert-error").prepend('<button type="button" class="close" data-dismiss="alert">x</button><strong>Error!</strong> ');
+                    $("#messagebox").addClass("alert-error");
+                    $("#messagebox .alert-heading").text(errorThrown);
+                   
+                    rbError = $.parseJSON(jqXHR.responseText);
+                    $("#messagebox .alert-block").text(rbError.path + ': ' + rbError.message);
                 });
 
             }
@@ -96,29 +101,27 @@
             function update(url) {}
 
             function self(url) {
+                $('#orderid').text('');
+                $('#items').empty();
                 $.getJSON(url, function (order) {
                     $('#orderid').text(order.id);
-                    $('#items').empty();
                     order.items.forEach(function (item, idx) {
-                        $('#items').append(quantityTmpl(idx, item.quantity));;
+                        $('#items').append(quantityTmpl(idx, item.quantity));
                         $('#items').append(nameTmpl(idx, item.name));
                         $('#items').append(milkTmpl(idx, item.milk));
                         $('#items').append(sizeTmpl(idx, item.size));
                         // $('#items').append(shotTmpl.replace(/@idx@/gi, idx));
                     });
                     $("input[name=location][value=" + order.location + "]").prop('checked', true);
-                    console.log(order);
-                }).error(function( jqXHR, textStatus, errorThrown ){
-                    $("#messagebox").addClass("alert-error");
-                    $("#messagebox .alert-heading").text(errorThrown);
-                    rbError = $.parseJSON(jqXHR.responseText);
-                    $("#messagebox .alert-block").text(rbError.path +': '+ rbError.message);
                 });
             }
         </script>
     </head>
 
-    <body>
+    <body onload="self(window.location.href);">
+        
+        <input type="text" id="url"/><button onclick="self($('#url').val())">load</button>
+        
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container-fluid">
@@ -131,13 +134,13 @@
                     <div class="nav-collapse">
                         <ul class="nav">
                             <li>
-                                <a href="./restbucks.html#">Info</a>
+                                <a href="/restbucks.html#">Info</a>
                             </li>
                             <li>
-                                <a href="./restbucks.html#model">Model</a>
+                                <a href="/restbucks.html#model">Model</a>
                             </li>
                             <li>
-                                <a href="./restbucks.html#hypermedia">Hypermedia</a>
+                                <a href="/restbucks.html#hypermedia">Hypermedia</a>
                             </li>
                         </ul>
                         <p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>
@@ -145,8 +148,6 @@
                 </div>
             </div>
         </div>
-
-        <input type="url" id="url" value="http://localhost:8080/orders/1"/><button onclick="self($('#url').val());">load</button>
         <div class="container-fluid">
             <div id="messagebox" class="alert">
                 <button type="button" class="close" data-dismiss="alert">x</button>
@@ -226,19 +227,27 @@
         <!-- Le javascript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
-        <script src="./js/jquery.js" th:src="@{/js/jquery.js}"></script>
-        <script src="./js/bootstrap-transition.js" th:src="@{/js/bootstrap-transition.js}"></script>
-        <script src="./js/bootstrap-alert.js" th:src="@{/js/bootstrap-alert.js}"></script>
-        <script src="./js/bootstrap-modal.js" th:src="@{/js/bootstrap-modal.js}"></script>
-        <script src="./js/bootstrap-dropdown.js" th:src="@{/js/bootstrap-dropdown.js}"></script>
-        <script src="./js/bootstrap-scrollspy.js" th:src="@{/js/bootstrap-scrollspy.js}"></script>
-        <script src="./js/bootstrap-tab.js" th:src="@{/js/bootstrap-tab.js}"></script>
-        <script src="./js/bootstrap-tooltip.js" th:src="@{/js/bootstrap-tooltip.js}"></script>
-        <script src="./js/bootstrap-popover.js" th:src="@{/js/bootstrap-popover.js}"></script>
-        <script src="./js/bootstrap-button.js" th:src="@{/js/bootstrap-button.js}"></script>
-        <script src="./js/bootstrap-collapse.js" th:src="@{/js/bootstrap-collapse.js}"></script>
-        <script src="./js/bootstrap-carousel.js" th:src="@{/js/bootstrap-carousel.js}"></script>
-        <script src="./js/bootstrap-typeahead.js" th:src="@{/js/bootstrap-typeahead.js}"></script>
-
+        <script src="/js/jquery.js"></script>
+        <script src="/js/bootstrap-transition.js"></script>
+        <script src="/js/bootstrap-alert.js"></script>
+        <script src="/js/bootstrap-modal.js"></script>
+        <script src="/js/bootstrap-dropdown.js"></script>
+        <script src="/js/bootstrap-scrollspy.js"></script>
+        <script src="/js/bootstrap-tab.js"></script>
+        <script src="/js/bootstrap-tooltip.js"></script>
+        <script src="/js/bootstrap-popover.js"></script>
+        <script src="/js/bootstrap-button.js"></script>
+        <script src="/js/bootstrap-collapse.js"></script>
+        <script src="/js/bootstrap-carousel.js"></script>
+        <script src="/js/bootstrap-typeahead.js"></script>
+<script type="text/javascript">
+             $( document ).ajaxError(function (event, jqXHR, settings, errorThrown) {
+                $("#messagebox").addClass("alert-error");
+                $("#messagebox .alert-heading").text(errorThrown);
+                console.log(jqXHR);
+                rbError = $.parseJSON(jqXHR.responseText);
+                $("#messagebox .alert-block").text(rbError.path + ': ' + rbError.message);
+            });
+        </script>
     </body>
 </html>
