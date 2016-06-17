@@ -32,8 +32,9 @@
         <link rel="apple-touch-icon" sizes="114x114" href="./images/apple-touch-icon-114x114.png"/>
         -->
         <script type="text/javascript">
+            
             function nameTmpl(idx, value) {
-                return '<div class="control-group"> ' +
+                return value === undefined ? '' :'<div class="control-group"> ' +
                         '<label class="control-label" for="' + idx + '-name">Name</label>' +
                         '<div class="controls">' +
                         '<select id="' + idx + '-name" name="' + idx + '-name"> ' +
@@ -46,7 +47,7 @@
                         '</div>';
             }
             function quantityTmpl(idx, value) {
-                return '<div class="control-group">' +
+                return value === undefined ? '' :'<div class="control-group">' +
                         '<label class="control-label" for="' + idx + '-quantity">Quantity</label>' +
                         '<div class="controls">' +
                         '<input type="number" min="1" id="' + idx + '-quantity" name="' + idx + '-quantity" value="' + value + '" size="4"/>' +
@@ -54,7 +55,7 @@
                         '</div> ';
             }
             function milkTmpl(idx, value) {
-                return '<div class="control-group">' +
+                return value === undefined ? '' :'<div class="control-group">' +
                         '<label class="control-label" for="' + idx + '-milk">Milk</label>' +
                         '<div class="controls">' +
                         '<select id="' + idx + '-milk" name="' + idx + '-milk">' +
@@ -66,13 +67,25 @@
                 '</div> ';
             }
             function sizeTmpl(idx, value) {
-                return '<div class="control-group">' +
+                return value === undefined ? '' :'<div class="control-group">' +
                         '<label class="control-label" for="' + idx + '-size">Size</label>' +
                         '<div class="controls">' +
                         '<select id="' + idx + '-size" name="' + idx + '-size">' +
                         '<option value="SMALL"' + (value === 'SMALL' ? ' selected' : '') + '>small</option> ' +
                         '<option value="MEDIUM"' + (value === 'MEDIUM' ? ' selected' : '') + '>medium</option>' +
                         '<option value="LARGE"' + (value === 'LARGE' ? ' selected' : '') + '>large</option>' +
+                        '</select>' +
+                        '</div>' +
+                        '</div>';
+            }
+             function shotTmpl(idx, value) {
+                return value === undefined ? '' : '<div class="control-group">' +
+                        '<label class="control-label" for="' + idx + '-shot">Shot</label>' +
+                        '<div class="controls">' +
+                        '<select id="' + idx + '-shot" name="' + idx + '-size">' +
+                        '<option value="SINGLE"' + (value === 'SINGLE' ? ' selected' : '') + '>single</option> ' +
+                        '<option value="DOUBLE"' + (value === 'DOUBLE' ? ' selected' : '') + '>double</option>' +
+                        '<option value="TRIPLE"' + (value === 'TRIPLE' ? ' selected' : '') + '>triple</option>' +
                         '</select>' +
                         '</div>' +
                         '</div>';
@@ -91,7 +104,7 @@
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     $("#messagebox").addClass("alert-error");
                     $("#messagebox .alert-heading").text(errorThrown);
-                   
+
                     rbError = $.parseJSON(jqXHR.responseText);
                     $("#messagebox .alert-block").text(rbError.path + ': ' + rbError.message);
                 });
@@ -101,27 +114,27 @@
             function update(url) {}
 
             function self(url) {
-                $('#orderid').text('');
-                $('#items').empty();
                 $.getJSON(url, function (order) {
+                    
                     $('#orderid').text(order.id);
+                    $("input[name=location][value=" + order.location + "]").prop('checked', true);
+                    
+                    $('#items').empty(); 
                     order.items.forEach(function (item, idx) {
                         $('#items').append(quantityTmpl(idx, item.quantity));
                         $('#items').append(nameTmpl(idx, item.name));
                         $('#items').append(milkTmpl(idx, item.milk));
                         $('#items').append(sizeTmpl(idx, item.size));
-                        // $('#items').append(shotTmpl.replace(/@idx@/gi, idx));
+                        $('#items').append(shotTmpl(idx, item.shot));
                     });
-                    $("input[name=location][value=" + order.location + "]").prop('checked', true);
+                    
                 });
             }
+
         </script>
     </head>
 
-    <body onload="self(window.location.href);">
-        
-        <input type="text" id="url"/><button onclick="self($('#url').val())">load</button>
-        
+    <body>
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container-fluid">
@@ -155,7 +168,7 @@
                 <p class="alert-block">message</p>
             </div>
 
-            <div class="row-fluid">
+            <div class="row-fluid" id="order">
                 <div class="span2">
                     <div class="well sidebar-nav">
                         <ul class="nav nav-list">
@@ -168,8 +181,7 @@
                 </div><!--/span-->
                 <div class="span10">
                     <div class="hero-unit">
-                        <h3>RESTBucks Order</h3>
-                        <h4 id="orderid">0</h4>
+                        <h3>RESTBucks Order <span id="orderid"></span></h3>
                         <form id="updateOrder" class="form-horizontal" role="form">
                             <div class="control-group">
                                 <div class="control-group">
@@ -181,7 +193,6 @@
                             <fieldset>
                                 <legend>Items</legend>
                                 <div id="items">
-
                                 </div>
                             </fieldset>
                         </form>
@@ -240,14 +251,28 @@
         <script src="/js/bootstrap-collapse.js"></script>
         <script src="/js/bootstrap-carousel.js"></script>
         <script src="/js/bootstrap-typeahead.js"></script>
-<script type="text/javascript">
-             $( document ).ajaxError(function (event, jqXHR, settings, errorThrown) {
-                $("#messagebox").addClass("alert-error");
-                $("#messagebox .alert-heading").text(errorThrown);
-                console.log(jqXHR);
-                rbError = $.parseJSON(jqXHR.responseText);
-                $("#messagebox .alert-block").text(rbError.path + ': ' + rbError.message);
-            });
+        <script type="text/javascript">
+                                    $(document).ajaxError(function (event, jqXHR, settings, errorThrown) {
+                                        $("#messagebox").addClass("alert-error");
+                                        $("#messagebox .alert-heading").text(errorThrown);
+                                        rbError = $.parseJSON(jqXHR.responseText);
+                                        $("#messagebox .alert-block").text(rbError.path + ': ' + rbError.message);
+                                    });
+                                    $(function () {
+                                        var selfUrl = window.location.href;
+                                        if (selfUrl.search("/orders/") > 0) {
+                                            self(selfUrl);
+
+                                            
+                                            //var oLoc = new MyCtor(document.getElementById("location"), selectedOrder.location);
+                                            
+                                        } else {
+                                            $("#messagebox").addClass("alert-error");
+                                            $("#messagebox .alert-heading").text("Invalid call");
+                                            $("#messagebox .alert-block").text("no order can be displayed, mismatched URL");
+                                        }
+                                        ;
+                                    });
         </script>
     </body>
 </html>

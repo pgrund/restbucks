@@ -14,8 +14,8 @@ public class Item {
     private Order.Drink name;
     private int quantity;
     private Order.Milk milk;
-    private Order.Size size;
-    private Order.Shots shots;
+    private Order.Size size = Order.Size.MEDIUM;
+    private Order.Shots shots = Order.Shots.SINGLE;
     
     public Item(){}
     
