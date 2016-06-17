@@ -32,9 +32,16 @@
         <link rel="apple-touch-icon" sizes="114x114" href="./images/apple-touch-icon-114x114.png"/>
         -->
         <script type="text/javascript">
-            
+
+            function messagebox(heading, text, mode) {
+                mode = typeof mode !== 'undefined' ? mode : 'error';
+                $("#messagebox").html('<div class="alert alert-' + mode + ' alert-dismissable">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+                        '<h2 class="alert-heading">' + heading + '</h2>' +
+                        '<p class="alert-block">' + text + '</p>');
+            }
             function nameTmpl(idx, value) {
-                return value === undefined ? '' :'<div class="control-group"> ' +
+                return value === undefined ? '' : '<div class="control-group"> ' +
                         '<label class="control-label" for="' + idx + '-name">Name</label>' +
                         '<div class="controls">' +
                         '<select id="' + idx + '-name" name="' + idx + '-name"> ' +
@@ -47,7 +54,7 @@
                         '</div>';
             }
             function quantityTmpl(idx, value) {
-                return value === undefined ? '' :'<div class="control-group">' +
+                return value === undefined ? '' : '<div class="control-group">' +
                         '<label class="control-label" for="' + idx + '-quantity">Quantity</label>' +
                         '<div class="controls">' +
                         '<input type="number" min="1" id="' + idx + '-quantity" name="' + idx + '-quantity" value="' + value + '" size="4"/>' +
@@ -55,7 +62,7 @@
                         '</div> ';
             }
             function milkTmpl(idx, value) {
-                return value === undefined ? '' :'<div class="control-group">' +
+                return value === undefined ? '' : '<div class="control-group">' +
                         '<label class="control-label" for="' + idx + '-milk">Milk</label>' +
                         '<div class="controls">' +
                         '<select id="' + idx + '-milk" name="' + idx + '-milk">' +
@@ -67,7 +74,7 @@
                 '</div> ';
             }
             function sizeTmpl(idx, value) {
-                return value === undefined ? '' :'<div class="control-group">' +
+                return value === undefined ? '' : '<div class="control-group">' +
                         '<label class="control-label" for="' + idx + '-size">Size</label>' +
                         '<div class="controls">' +
                         '<select id="' + idx + '-size" name="' + idx + '-size">' +
@@ -78,7 +85,7 @@
                         '</div>' +
                         '</div>';
             }
-             function shotTmpl(idx, value) {
+            function shotTmpl(idx, value) {
                 return value === undefined ? '' : '<div class="control-group">' +
                         '<label class="control-label" for="' + idx + '-shot">Shot</label>' +
                         '<div class="controls">' +
@@ -91,7 +98,43 @@
                         '</div>';
             }
 
+            function linkNavTmpl(origRel) {
+                rel = origRel.split(':').pop();
+                var icons = {};
+                icons['self'] = 'icon-refresh';
+                icons['update'] = 'icon-pencil';
+                icons['cancel'] = 'icon-trash';
+                icons['pay'] = 'icon-shopping-cart';
+               
+                return '<li class="' + (rel === 'self' ? 'active' : '') + '">' +
+                        '<a href="#' + rel + '" data-toggle="tab" onclick="' + (rel === 'cancel' ? 
+                'messagebox(\'Warning!\', \'Are you sure you want to cancel/delete this order ?\')' : 
+                '$(\'#messagebox div.alert\').alert(\'close\')') + 
+                        '">' +
+                        '<i class="' + icons['' + rel] + '"></i>' +
+                        '<span>' + rel + '</span>' +
+                        '</a>' +
+                        '</li>'
+            }
+            function linkTabTmpl(origRel, obj, status) {
+                var rel = origRel.split(':').pop();
+                if (rel === 'self') {
+                    
+                            '<p';
+                    if (status === 'UNPAID') {
+                        $("#self p.status").val('Your order is awaiting payment. <br/> You may also <a href="#cancel" data-toggle="tab">cancel</a> your order completely.</p>');
+                    } else {
+                        $("#self p.status").addClass("alert").val(status);
+                    }
+                }
+
+                $('#send'+rel).data('href', (rel === 'curies' ? obj : obj.href));
+                
+            }
+
             function cancel(url) {
+                console.log('cancel for '+ url);
+                return;
                 $.ajax({
                     url: url,
                     type: 'DELETE',
@@ -101,25 +144,26 @@
                     window.setTimeout(function () {
                         self(url);
                     }, 5000);
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    $("#messagebox").addClass("alert-error");
-                    $("#messagebox .alert-heading").text(errorThrown);
-
-                    rbError = $.parseJSON(jqXHR.responseText);
-                    $("#messagebox .alert-block").text(rbError.path + ': ' + rbError.message);
                 });
 
             }
-            function pay(url) {}
-            function update(url) {}
+            function pay(url) {
+                console.log('pay for '+ url);
+                return;
+            }
+            function update(url) {
+                console.log('update for '+ url);
+                return;
+            }
 
             function self(url) {
                 $.getJSON(url, function (order) {
-                    
-                    $('#orderid').text(order.id);
+                    selectedOrder = order;
+
+                    $('#orderid').text(": " + order.id);
                     $("input[name=location][value=" + order.location + "]").prop('checked', true);
-                    
-                    $('#items').empty(); 
+
+                    $('#items').empty();
                     order.items.forEach(function (item, idx) {
                         $('#items').append(quantityTmpl(idx, item.quantity));
                         $('#items').append(nameTmpl(idx, item.name));
@@ -127,8 +171,18 @@
                         $('#items').append(sizeTmpl(idx, item.size));
                         $('#items').append(shotTmpl(idx, item.shots));
                     });
-                    
+
+                    $('#links ul.nav-tabs').empty();
+                    $.each(order._links, (function (rel, href) {
+                        $('#links ul.nav-tabs').append(linkNavTmpl(rel));
+                        linkTabTmpl(rel, href, order.status);
+                    }));
                 });
+            }
+            
+            function curies(url) {
+                console.log('curies, got infos at ...', url);
+                return;
             }
 
         </script>
@@ -162,11 +216,7 @@
             </div>
         </div>
         <div class="container-fluid">
-            <div id="messagebox" class="alert">
-                <button type="button" class="close" data-dismiss="alert">x</button>
-                <h2 class="alert-heading">heading</h2>
-                <p class="alert-block">message</p>
-            </div>
+            <div id="messagebox"></div>
 
             <div class="row-fluid" id="order">
                 <div class="span2">
@@ -192,46 +242,37 @@
                             </div>
                             <fieldset>
                                 <legend>Items</legend>
-                                <div id="items">
-                                </div>
+                                <div id="items"></div>
                             </fieldset>
                         </form>
-                    </div>
-                    <div class="row-fluid tabbable">
-                        <ul class="nav nav-tabs">
-                            <th:block th:each="link : ${links}">
-                                <li class="active" th:attr="class=((${link.getRel()} == 'self') ? 'active')">
-                                    <a href="#self" th:href="'#'+${link.getRel()}" data-toggle="tab">
-                                        <i th:attr="class='icon-' +((${link.getRel()} == 'update') ? 'pencil' : ((${link.getRel()} == 'cancel') ? 'trash' : ((${link.getRel()} == 'pay') ? 'shopping-cart' : 'refresh' )))" class="icon-trash"></i>
-                                        <span th:text="${link.getRel()}">self</span>
-                                    </a>
-                                </li>
-                            </th:block>
-                        </ul>
-                        <div class="tab-content">
-                            <div th:each="link : ${links}" id="self" class="tab-pane active" th:attr="id=${link.getRel()},class='tab-pane' + ((${link.getRel()} == 'self' ? ' active' : ''))">
-
-
-                                <div th:if="${link.getRel()} == 'self'" class="order" th:switch="${order.getStatus().toString()}">
-                                    <p class="status" th:case="UNPAID">Your order is awaiting payment. <br/> You may also <a href="#cancel" data-toggle="tab">cancel</a> your order completely.</p>
-
-                                    <p class="alert" th:case="*" th:text="${order.getStatus().toString()}">status</p>
+                        <div class="row-fluid tabbable" id="links">
+                            <ul class="nav nav-tabs"></ul>
+                            <div class="tab-content">
+                                <div id="self" class="tab-pane active">
+                                    <p class="status"></p>
+                                    <button id="sendself" onclick="self($(this).data('href'))" class="btn btn-success">refresh</button>
                                 </div>
-                                <th:block th:if="${link.getRel()} == 'cancel'" >
-                                    <div class="alert" id="alert.cancel">
-                                        <button type="button" class="close" data-dismiss="alert">x</button>
-                                        <strong>Warning!</strong> Are you sure you want to cancel/delete this order ?
-                                    </div>                     
-
-
-                                </th:block>
-                                <button id="send" onclick="self();" th:attr="onclick=${link.getRel()}+'(\''+${link.getHref()}+'\')'" class="btn btn-success" th:text="${link.getRel()}">
-                                    self
-                                </button>         
+                                <div id="update" class="tab-pane">
+                                    <p>Please be aware that all data of the order will be <strong>OVERWRITTEN</strong>.</p>
+                                    <button id="sendupdate" onclick="update($(this).data('href'))" class="btn btn-success">update order</button>
+                                </div>
+                                <div id="cancel" class="tab-pane">
+                                    <p>Cancelling this order will not delete it immediately, status get changed and cleanup will be done later.</p>
+                                    <button id="sendcancel" onclick="cancel($(this).data('href'))" class="btn btn-success">cancel order</button>
+                                </div>
+                                <div id="pay" class="tab-pane">
+                                    <p>...</p>
+                                    <button id="sendpay" onclick="pay($(this).data('href'))" class="btn btn-success">pay for order</button>
+                                </div>
+                                <div id="curies" class="tab-pane">
+                                    <p>infos for all relations mentioned ... </p>
+                                    <button id="sendcuries" onclick="curies($(this).data('href'))" class="btn btn-success">view relation infos</button>
+                                </div>
                             </div>
-                        </div>
-                    </div><!--/row-->
-                </div><!--/span-->
+                        </div><!--/row-->
+                    </div><!--/span-->
+                </div>
+
             </div><!--/row-->
         </div><!--/container-->
 
@@ -252,27 +293,18 @@
         <script src="/js/bootstrap-carousel.js"></script>
         <script src="/js/bootstrap-typeahead.js"></script>
         <script type="text/javascript">
-                                    $(document).ajaxError(function (event, jqXHR, settings, errorThrown) {
-                                        $("#messagebox").addClass("alert-error");
-                                        $("#messagebox .alert-heading").text(errorThrown);
-                                        rbError = $.parseJSON(jqXHR.responseText);
-                                        $("#messagebox .alert-block").text(rbError.path + ': ' + rbError.message);
-                                    });
-                                    $(function () {
-                                        var selfUrl = window.location.href;
-                                        if (selfUrl.search("/orders/") > 0) {
-                                            self(selfUrl);
-
-                                            
-                                            //var oLoc = new MyCtor(document.getElementById("location"), selectedOrder.location);
-                                            
-                                        } else {
-                                            $("#messagebox").addClass("alert-error");
-                                            $("#messagebox .alert-heading").text("Invalid call");
-                                            $("#messagebox .alert-block").text("no order can be displayed, mismatched URL");
-                                        }
-                                        ;
-                                    });
+            $(document).ajaxError(function (event, jqXHR, settings, errorThrown) {
+                rbError = $.parseJSON(jqXHR.responseText);
+                messagebox(errorThrown, rbError.path + ': ' + rbError.message);
+            });
+            $(function () {
+                var selfUrl = window.location.href;
+                if (selfUrl.search("/orders/") > 0) {
+                    self(selfUrl);
+                } else {
+                    messagebox('Invalid call','no order can be displayed, mismatched URL');
+                }
+            });
         </script>
     </body>
 </html>
