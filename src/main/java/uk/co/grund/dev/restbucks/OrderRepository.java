@@ -27,7 +27,7 @@ import uk.co.grund.dev.restbucks.model.Location;
 @Repository
 public class OrderRepository {
 
-    private static long counterIncr = 2;
+    private static long counterIncr = 5;
     private static final Logger LOG = Logger.getLogger(OrderRepository.class.getName());
 
     private Map<Long, Order> allOrders = new HashMap<>();
