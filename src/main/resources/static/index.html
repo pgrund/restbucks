@@ -41,10 +41,10 @@
                         '<p class="alert-block">' + text + '</p>');
             }
             function nameTmpl(idx, value) {
-                return value === undefined ? '' : '<div class="control-group"> ' +
+                return '<div class="control-group"> ' +
                         '<label class="control-label" for="' + idx + '-name">Name</label>' +
                         '<div class="controls">' +
-                        '<select id="' + idx + '-name" name="' + idx + '-name"> ' +
+                        '<select id="' + idx + '-name" name="' + idx + '-name" required="required"> ' +
                         '<option value="ESPRESSO"' + (value === 'ESPRESSO' ? ' selected' : '') + '>espresso</option>' +
                         '<option value="LATTE"' + (value === 'LATTE' ? ' selected' : '') + '>latte</option> ' +
                         '<option value="CAPUCCINO"' + (value === 'CAPUCCINO' ? ' selected' : '') + '>capuccino</option>' +
@@ -54,7 +54,8 @@
                         '</div>';
             }
             function quantityTmpl(idx, value) {
-                return value === undefined ? '' : '<div class="control-group">' +
+                value = (value === undefined ? 1 : value);
+                return '<div class="control-group">' +
                         '<label class="control-label" for="' + idx + '-quantity">Quantity</label>' +
                         '<div class="controls">' +
                         '<input type="number" min="1" id="' + idx + '-quantity" name="' + idx + '-quantity" value="' + value + '" size="4"/>' +
@@ -62,19 +63,21 @@
                         '</div> ';
             }
             function milkTmpl(idx, value) {
-                return value === undefined ? '' : '<div class="control-group">' +
-                        '<label class="control-label" for="' + idx + '-milk">Milk</label>' +
+                value = (value === undefined ? '' : value);
+                return value === '<div class="control-group">' +
+                        '<label class="control-label" for="items[' + idx + '][milk]">Milk</label>' +
                         '<div class="controls">' +
-                        '<select id="' + idx + '-milk" name="' + idx + '-milk">' +
+                        '<select id="' + idx + '-milk" name="items[' + idx + '][milk]">' +
                         '<option value="SEMI"' + (value === 'SEMI' ? ' selected' : '') + '>semi milk</option> ' +
                         '<option value="SKIM"' + (value === 'SKIM' ? ' selected' : '') + '>skim milk</option> ' +
                         '<option value="WHOLE"' + (value === 'WHOLE' ? ' selected' : '') + '>whole milk</option> ' +
                         '</select>' +
-                        '</div>'
-                '</div> ';
+                        '</div>' +
+                        '</div> ';
             }
             function sizeTmpl(idx, value) {
-                return value === undefined ? '' : '<div class="control-group">' +
+                value = (value === undefined ? 'MEDIUM' : value);
+                return '<div class="control-group">' +
                         '<label class="control-label" for="' + idx + '-size">Size</label>' +
                         '<div class="controls">' +
                         '<select id="' + idx + '-size" name="' + idx + '-size">' +
@@ -86,16 +89,24 @@
                         '</div>';
             }
             function shotTmpl(idx, value) {
-                return value === undefined ? '' : '<div class="control-group">' +
+                value = (value === undefined ? 'SINGLE' : value);
+                return '<div class="control-group">' +
                         '<label class="control-label" for="' + idx + '-shot">Shot</label>' +
                         '<div class="controls">' +
-                        '<select id="' + idx + '-shot" name="' + idx + '-size">' +
+                        '<select id="' + idx + '-shot" name="' + idx + '-shot">' +
                         '<option value="SINGLE"' + (value === 'SINGLE' ? ' selected' : '') + '>single</option> ' +
                         '<option value="DOUBLE"' + (value === 'DOUBLE' ? ' selected' : '') + '>double</option>' +
                         '<option value="TRIPLE"' + (value === 'TRIPLE' ? ' selected' : '') + '>triple</option>' +
                         '</select>' +
                         '</div>' +
                         '</div>';
+            }
+            function addItem(element, idx) {
+                $(element).append(quantityTmpl(idx));
+                $(element).append(nameTmpl(idx));
+                $(element).append(milkTmpl(idx));
+                $(element).append(sizeTmpl(idx));
+                $(element).append(shotTmpl(idx));
             }
 
             function linkNavTmpl(origRel) {
@@ -105,36 +116,30 @@
                 icons['update'] = 'icon-pencil';
                 icons['cancel'] = 'icon-trash';
                 icons['pay'] = 'icon-shopping-cart';
-               
+
                 return '<li class="' + (rel === 'self' ? 'active' : '') + '">' +
-                        '<a href="#' + rel + '" data-toggle="tab" onclick="' + (rel === 'cancel' ? 
-                'messagebox(\'Warning!\', \'Are you sure you want to cancel/delete this order ?\')' : 
-                '$(\'#messagebox div.alert\').alert(\'close\')') + 
-                        '">' +
+                        '<a href="#' + rel + '" data-toggle="tab" onclick="' + (rel === 'cancel' ?
+                                'messagebox(\'Warning!\', \'Are you sure you want to cancel/delete this order ?\')' :
+                                '$(\'#messagebox div.alert\').alert(\'close\')') + '">' +
                         '<i class="' + icons['' + rel] + '"></i>' +
                         '<span>' + rel + '</span>' +
                         '</a>' +
-                        '</li>'
+                        '</li>';
             }
             function linkTabTmpl(origRel, obj, status) {
                 var rel = origRel.split(':').pop();
                 if (rel === 'self') {
-                    
-                            '<p';
                     if (status === 'UNPAID') {
                         $("#self p.status").val('Your order is awaiting payment. <br/> You may also <a href="#cancel" data-toggle="tab">cancel</a> your order completely.</p>');
                     } else {
                         $("#self p.status").addClass("alert").val(status);
                     }
                 }
-
-                $('#send'+rel).data('href', (rel === 'curies' ? obj : obj.href));
-                
+                $('#send' + rel).data('href', (rel === 'curies' ? obj : obj.href));
             }
 
             function cancel(url) {
-                console.log('cancel for '+ url);
-                return;
+                console.log('cancel for ' + url);
                 $.ajax({
                     url: url,
                     type: 'DELETE',
@@ -148,12 +153,20 @@
 
             }
             function pay(url) {
-                console.log('pay for '+ url);
+                console.log('pay for ' + url);
                 return;
             }
             function update(url) {
-                console.log('update for '+ url);
+                console.log('update for ' + url);
                 return;
+            }
+
+            function create(url) {
+                console.log('create for ' + url);
+                $('#updateOrder').attr("action", "/orders")
+                        .attr("method", "post")
+                        .submit();
+
             }
 
             function self(url) {
@@ -179,7 +192,7 @@
                     }));
                 });
             }
-            
+
             function curies(url) {
                 console.log('curies, got infos at ...', url);
                 return;
@@ -222,7 +235,12 @@
                 <div class="span2">
                     <div class="well sidebar-nav">
                         <ul class="nav nav-list">
-                            <li class="nav-header">RESTBucks</li>                                    
+                            <li class="nav-header">RESTBucks</li>      
+                            <li class="divider" role="seperator"></li>
+                            <li>
+                                <a href="/">new order</a>
+                            </li>
+                            <li class="divider" role="seperator"></li>
                             <li class="nav-header">
                                 <a href="https://github.com/pgrund/restbucks">source</a>
                             </li>
@@ -236,13 +254,56 @@
                             <div class="control-group">
                                 <div class="control-group">
                                     <label class="col-sm-4 control-label">Location</label>
-                                    <label class="radio-inline"> <input type="radio" name="location" value="IN_SHOP"> in shop </label>
-                                    <label class="radio-inline"> <input type="radio" name="location" value="TAKE_AWAY"> take away </label>
+                                    <label class="radio-inline"> 
+                                        <input type="radio" name="location" value="IN_SHOP" required> in shop 
+                                    </label>
+                                    <label class="radio-inline"> 
+                                        <input type="radio" name="location" value="TAKE_AWAY" required> take away 
+                                    </label>
                                 </div>
                             </div>
                             <fieldset>
                                 <legend>Items</legend>
-                                <div id="items"></div>
+                                <div id="items-o">
+                                    <div class="control-group">
+                                        <label class="control-label" for="items[0].quantity">Quantity</label>
+                                        <div class="controls">
+                                            <input type="number" min="1" name="items[0].quantity" value="0"/>
+                                        </div>
+                                    </div> 
+                                    <div class="control-group">
+                                        <label class="control-label" for="items[0].name">Name</label>
+                                        <div class="controls">
+                                            <select name="items[0].name">
+                                                <option value="CAPUCCINO">Cappuccino</option>
+                                                <option value="LATTE">Latte</option>
+                                                <option value="ESPRESSO">Espresso</option>
+                                                <option value="FLAT_WHITE">Flat White</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label" for="items[0].milk">Milk</label>
+                                        <div class="controls">
+                                            <select name="items[0].milk">
+                                                <option value="SEMI">semi milk</option>
+                                                <option value="SKIM">skim milk</option>
+                                                <option value="WHOLE">whole milk</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label" for="items[0].size">Size</label>
+                                        <div class="controls">
+                                            <select name="items[0].size">
+                                                <option value="SMALL">small</option>
+                                                <option value="MEDIUM">medium</option>
+                                                <option value="LARGE">large</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button id="addItem">add another item</button>
                             </fieldset>
                         </form>
                         <div class="row-fluid tabbable" id="links">
@@ -293,18 +354,29 @@
         <script src="/js/bootstrap-carousel.js"></script>
         <script src="/js/bootstrap-typeahead.js"></script>
         <script type="text/javascript">
-            $(document).ajaxError(function (event, jqXHR, settings, errorThrown) {
-                rbError = $.parseJSON(jqXHR.responseText);
-                messagebox(errorThrown, rbError.path + ': ' + rbError.message);
-            });
-            $(function () {
-                var selfUrl = window.location.href;
-                if (selfUrl.search("/orders/") > 0) {
-                    self(selfUrl);
-                } else {
-                    messagebox('Invalid call','no order can be displayed, mismatched URL');
-                }
-            });
+                                        $(document).ajaxError(function (event, jqXHR, settings, errorThrown) {
+                                            rbError = $.parseJSON(jqXHR.responseText);
+                                            messagebox(errorThrown, rbError.path + ': ' + rbError.message);
+                                        });
+                                        $(function () {
+                                            var selfUrl = window.location.href;
+                                            if (selfUrl.search("/orders/") > 0) {
+                                                self(selfUrl);
+                                            } else {
+                                                messagebox('New Order', '...', "info");
+                                                $('#sendself')
+                                                        .click(function () {
+                                                            create("/orders");
+                                                        })
+                                                        .text("create")
+                                                        .attr("onclick", "console.log('ignored');return false;");
+                                            }
+
+                                            $("#addItem").click(function () {
+                                                addItem("#items", 0);
+                                                return false;
+                                            });
+                                        });
         </script>
     </body>
 </html>

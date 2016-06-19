@@ -52,7 +52,7 @@ public class OrderController {
     @RequestMapping(
             path = "/{orderId}",
             method = RequestMethod.GET,
-            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, "application/hal+json"})
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, "application/hal+json", MediaType.APPLICATION_FORM_URLENCODED_VALUE })
     public @ResponseBody Resource<Order> getOrder(@PathVariable("orderId") String orderId)
             throws NoSuchOrderException {
 
@@ -78,10 +78,12 @@ public class OrderController {
 
     @RequestMapping(
             method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
+            consumes = { MediaType.APPLICATION_JSON_VALUE, 
+                MediaType.APPLICATION_FORM_URLENCODED_VALUE },
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public @ResponseBody Resource<Order> createOrder(Order order) throws InvalidOrderException {
+        LOG.log(Level.INFO, order.toString());
         return getResource(service.createOrder(order));
     }
 
@@ -155,7 +157,7 @@ public class OrderController {
                 break;
 
         }
-
+        LOG.log(Level.INFO, "return resource for order {0}", order.id);
         return result;
 
     }
