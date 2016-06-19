@@ -40,75 +40,22 @@
                         '<h2 class="alert-heading">' + heading + '</h2>' +
                         '<p class="alert-block">' + text + '</p>');
             }
-            function nameTmpl(idx, value) {
-                return '<div class="control-group"> ' +
-                        '<label class="control-label" for="' + idx + '-name">Name</label>' +
-                        '<div class="controls">' +
-                        '<select id="' + idx + '-name" name="' + idx + '-name" required="required"> ' +
-                        '<option value="ESPRESSO"' + (value === 'ESPRESSO' ? ' selected' : '') + '>espresso</option>' +
-                        '<option value="LATTE"' + (value === 'LATTE' ? ' selected' : '') + '>latte</option> ' +
-                        '<option value="CAPUCCINO"' + (value === 'CAPUCCINO' ? ' selected' : '') + '>capuccino</option>' +
-                        '<option value="FLAT_WHITE"' + (value === 'FLAT_WHITE' ? ' selected' : '') + '>flat white</option> ' +
-                        '</select> ' +
-                        '</div>' +
-                        '</div>';
-            }
-            function quantityTmpl(idx, value) {
-                value = (value === undefined ? 1 : value);
-                return '<div class="control-group">' +
-                        '<label class="control-label" for="' + idx + '-quantity">Quantity</label>' +
-                        '<div class="controls">' +
-                        '<input type="number" min="1" id="' + idx + '-quantity" name="' + idx + '-quantity" value="' + value + '" size="4"/>' +
-                        '</div>' +
-                        '</div> ';
-            }
-            function milkTmpl(idx, value) {
-                value = (value === undefined ? '' : value);
-                return value === '<div class="control-group">' +
-                        '<label class="control-label" for="items[' + idx + '][milk]">Milk</label>' +
-                        '<div class="controls">' +
-                        '<select id="' + idx + '-milk" name="items[' + idx + '][milk]">' +
-                        '<option value="SEMI"' + (value === 'SEMI' ? ' selected' : '') + '>semi milk</option> ' +
-                        '<option value="SKIM"' + (value === 'SKIM' ? ' selected' : '') + '>skim milk</option> ' +
-                        '<option value="WHOLE"' + (value === 'WHOLE' ? ' selected' : '') + '>whole milk</option> ' +
-                        '</select>' +
-                        '</div>' +
-                        '</div> ';
-            }
-            function sizeTmpl(idx, value) {
-                value = (value === undefined ? 'MEDIUM' : value);
-                return '<div class="control-group">' +
-                        '<label class="control-label" for="' + idx + '-size">Size</label>' +
-                        '<div class="controls">' +
-                        '<select id="' + idx + '-size" name="' + idx + '-size">' +
-                        '<option value="SMALL"' + (value === 'SMALL' ? ' selected' : '') + '>small</option> ' +
-                        '<option value="MEDIUM"' + (value === 'MEDIUM' ? ' selected' : '') + '>medium</option>' +
-                        '<option value="LARGE"' + (value === 'LARGE' ? ' selected' : '') + '>large</option>' +
-                        '</select>' +
-                        '</div>' +
-                        '</div>';
-            }
-            function shotTmpl(idx, value) {
-                value = (value === undefined ? 'SINGLE' : value);
-                return '<div class="control-group">' +
-                        '<label class="control-label" for="' + idx + '-shot">Shot</label>' +
-                        '<div class="controls">' +
-                        '<select id="' + idx + '-shot" name="' + idx + '-shot">' +
-                        '<option value="SINGLE"' + (value === 'SINGLE' ? ' selected' : '') + '>single</option> ' +
-                        '<option value="DOUBLE"' + (value === 'DOUBLE' ? ' selected' : '') + '>double</option>' +
-                        '<option value="TRIPLE"' + (value === 'TRIPLE' ? ' selected' : '') + '>triple</option>' +
-                        '</select>' +
-                        '</div>' +
-                        '</div>';
-            }
-            function addItem(element, idx) {
-                $(element).append(quantityTmpl(idx));
-                $(element).append(nameTmpl(idx));
-                $(element).append(milkTmpl(idx));
-                $(element).append(sizeTmpl(idx));
-                $(element).append(shotTmpl(idx));
-            }
+       
+            function newItem(idx) {
+                var nextIdx = (idx === undefined ? $('#items .item').length : idx)
+                var newItem = $($('#items .item')[0]).clone(true);
+                
+                // rename id and name of new child elements, assign default values
+                newItem.find("#0_quantity").attr({id: nextIdx + '_quantity', name: 'items[' + nextIdx + '].quantity', value : '0'});
+                newItem.find("#0_name").attr({id: nextIdx + '_name', name: 'items[' + nextIdx + '].name', value: ''});
+                newItem.find("#0_milk").attr({id: nextIdx + '_milk', name: 'items[' + nextIdx + '].milk', value: ''});
+                newItem.find("#0_size").attr({id: nextIdx + '_size', name: 'items[' + nextIdx + '].size', value: 'MEDIUM'});
+                newItem.find("#0_shots").attr({id: nextIdx + '_shots', name: 'items[' + nextIdx + '].shots', value: 'SINGLE'});
 
+                $("#items").append(newItem);
+
+                return false;
+            }
             function linkNavTmpl(origRel) {
                 rel = origRel.split(':').pop();
                 var icons = {};
@@ -176,13 +123,18 @@
                     $('#orderid').text(": " + order.id);
                     $("input[name=location][value=" + order.location + "]").prop('checked', true);
 
-                    $('#items').empty();
+                    $('#items select').val("");
+                    $('#items input').val("");
                     order.items.forEach(function (item, idx) {
-                        $('#items').append(quantityTmpl(idx, item.quantity));
-                        $('#items').append(nameTmpl(idx, item.name));
-                        $('#items').append(milkTmpl(idx, item.milk));
-                        $('#items').append(sizeTmpl(idx, item.size));
-                        $('#items').append(shotTmpl(idx, item.shots));
+                        console.log("setting index "+ idx);
+                        if (! $('#' + idx + '_quantity').length) {
+                            newItem(idx);
+                        }
+                        $('#' + idx + '_quantity').val(item.quantity);
+                        $('#' + idx + '_name').val(item.name);
+                        $('#' + idx + '_milk').val(item.milk);
+                        $('#' + idx + '_size').val(item.size);
+                        $('#' + idx + '_shots').val(item.shots);
                     });
 
                     $('#links ul.nav-tabs').empty();
@@ -264,48 +216,61 @@
                             </div>
                             <fieldset>
                                 <legend>Items</legend>
-                                <div id="items-o">
-                                    <div class="control-group">
-                                        <label class="control-label" for="items[0].quantity">Quantity</label>
-                                        <div class="controls">
-                                            <input type="number" min="1" name="items[0].quantity" value="0"/>
+                                <div id="items">
+                                    <div class="item">
+                                        <div class="control-group">
+                                            <label class="control-label" for="items[0].quantity">Quantity</label>
+                                            <div class="controls">
+                                                <input type="number" min="1" name="items[0].quantity" id="0_quantity" value="0"/>
+                                            </div>
+                                        </div> 
+                                        <div class="control-group">
+                                            <label class="control-label" for="items[0].name">Name</label>
+                                            <div class="controls">
+                                                <select name="items[0].name" id="0_name">
+                                                    <option value="CAPUCCINO" selected="selected">Cappuccino</option>
+                                                    <option value="LATTE">Latte</option>
+                                                    <option value="ESPRESSO">Espresso</option>
+                                                    <option value="FLAT_WHITE">Flat White</option>
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div> 
-                                    <div class="control-group">
-                                        <label class="control-label" for="items[0].name">Name</label>
-                                        <div class="controls">
-                                            <select name="items[0].name">
-                                                <option value="CAPUCCINO">Cappuccino</option>
-                                                <option value="LATTE">Latte</option>
-                                                <option value="ESPRESSO">Espresso</option>
-                                                <option value="FLAT_WHITE">Flat White</option>
-                                            </select>
+                                        <div class="control-group">
+                                            <label class="control-label" for="items[0].milk">Milk</label>
+                                            <div class="controls">
+                                                <select name="items[0].milk" id="0_milk">
+                                                    <option value="SEMI" selected="selected">semi milk</option>
+                                                    <option value="SKIM">skim milk</option>
+                                                    <option value="WHOLE">whole milk</option>
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="control-group">
-                                        <label class="control-label" for="items[0].milk">Milk</label>
-                                        <div class="controls">
-                                            <select name="items[0].milk">
-                                                <option value="SEMI">semi milk</option>
-                                                <option value="SKIM">skim milk</option>
-                                                <option value="WHOLE">whole milk</option>
-                                            </select>
+                                        <div class="control-group">
+                                            <label class="control-label" for="items[0].size">Size</label>
+                                            <div class="controls">
+                                                <select name="items[0].size" id="0_size">
+                                                    <option value="SMALL">small</option>
+                                                    <option value="MEDIUM" selected="selected">medium</option>
+                                                    <option value="LARGE">large</option>
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="control-group">
-                                        <label class="control-label" for="items[0].size">Size</label>
-                                        <div class="controls">
-                                            <select name="items[0].size">
-                                                <option value="SMALL">small</option>
-                                                <option value="MEDIUM">medium</option>
-                                                <option value="LARGE">large</option>
-                                            </select>
+                                        <div class="control-group">
+                                            <label class="control-label" for="items[0].shots">Shot</label>
+                                            <div class="controls">
+                                                <select name="items[0].shots" id="0_shots">
+                                                    <option value="SINGLE" selected="selected">single</option>
+                                                    <option value="DOUBLE">double</option>
+                                                    <option value="TRIPLE">triple</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <button id="addItem">add another item</button>
+                                
                             </fieldset>
                         </form>
+                        <button id="addItem" onclick="newItem()">add another item</button>
                         <div class="row-fluid tabbable" id="links">
                             <ul class="nav nav-tabs"></ul>
                             <div class="tab-content">
@@ -373,8 +338,7 @@
                                             }
 
                                             $("#addItem").click(function () {
-                                                addItem("#items", 0);
-                                                return false;
+
                                             });
                                         });
         </script>
