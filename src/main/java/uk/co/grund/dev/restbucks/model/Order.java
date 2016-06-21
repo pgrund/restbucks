@@ -2,6 +2,7 @@ package uk.co.grund.dev.restbucks.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.xml.bind.annotation.XmlEnumValue;
 
 /**
@@ -139,5 +140,16 @@ public class Order {
         public boolean isTriple(){
             return this == TRIPLE;
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder strB = new StringBuilder(this.getClass().getSimpleName());
+        strB.append("[").append(id).append("]:");
+        strB.append(location).append(",");
+        strB.append("items[")
+            .append(items.stream().map(item -> item.toString()).collect(Collectors.joining(",")))
+            .append("]");
+        return strB.toString();
     }
 }

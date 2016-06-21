@@ -137,7 +137,7 @@ public class OrderRepository {
      * @throws IllegalStateException if not identifier present
      * @throws InvalidOrderException if passed {@link Order} is not valid
      */
-    public Order updateOrder(Order order, Long id) throws NoSuchOrderException,
+    public Order replaceOrder(Order order, Long id) throws NoSuchOrderException,
             IllegalStateException, InvalidOrderException {
         if (id == null) {
             throw new IllegalStateException("no id present");
@@ -151,8 +151,9 @@ public class OrderRepository {
         if (old.status != OrderStatus.UNPAID) {
             throw new InvalidOrderException();
         }
-
-        allOrders.merge(id, old, (BiFunction<? super Order, ? super Order, ? extends Order>) validateOrder(order));
+        validateOrder(order);
+        allOrders.put(id, order);
+        //allOrders.merge(id, old, (BiFunction<? super Order, ? super Order, ? extends Order>) validateOrder(order));
         return order;
     }
 

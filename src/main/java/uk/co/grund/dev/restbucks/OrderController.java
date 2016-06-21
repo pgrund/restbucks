@@ -1,6 +1,10 @@
 package uk.co.grund.dev.restbucks;
 
-import java.net.URISyntaxException;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import uk.co.grund.dev.restbucks.exceptions.InvalidOrderException;
 import uk.co.grund.dev.restbucks.exceptions.NoSuchOrderException;
 import uk.co.grund.dev.restbucks.exceptions.OrderDeletionException;
@@ -52,7 +55,16 @@ public class OrderController {
     @RequestMapping(
             path = "/{orderId}",
             method = RequestMethod.GET,
-            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, "application/hal+json", MediaType.APPLICATION_FORM_URLENCODED_VALUE })
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, "application/hal+json" })
+    @ApiOperation(value = "get single order")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="orderId", value="identifier of order", 
+                required = true, dataType = "string", paramType = "path")
+    })
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Success", response = Order.class),
+        @ApiResponse(code = 404, message = "Not found")
+    })
     public @ResponseBody Resource<Order> getOrder(@PathVariable("orderId") String orderId)
             throws NoSuchOrderException {
 
@@ -66,10 +78,19 @@ public class OrderController {
     }
 
     @RequestMapping(
-            path = "/{orderId}",
+            path = "/{orderId}.html",
             method = RequestMethod.GET,
             produces = MediaType.TEXT_HTML_VALUE
     )
+    @ApiOperation(value = "get HTML page for single order")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="orderId", value="identifier of order", 
+                required = true, dataType = "string", paramType = "path")
+    })
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Success" ),
+        @ApiResponse(code = 404, message = "Not found")
+    })
     public String getOrderAsHTML(@PathVariable("orderId") String orderId)
             throws NoSuchOrderException {
         LOG.log(Level.INFO, "entering html for order {0}", orderId);
@@ -78,38 +99,37 @@ public class OrderController {
 
     @RequestMapping(
             method = RequestMethod.POST,
-            consumes = { MediaType.APPLICATION_JSON_VALUE, 
-                MediaType.APPLICATION_FORM_URLENCODED_VALUE },
+            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public @ResponseBody Resource<Order> createOrder(Order order) throws InvalidOrderException {
+    public @ResponseBody Resource<Order> createOrder(@RequestBody(required = true) Order order) 
+            throws InvalidOrderException {
         LOG.log(Level.INFO, order.toString());
         return getResource(service.createOrder(order));
     }
 
     @RequestMapping(
             path = "/{orderId}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE
+            method = RequestMethod.DELETE
     )
     public @ResponseBody HttpEntity removeOrder(@PathVariable("orderId") String orderId)
             throws OrderDeletionException, NoSuchOrderException {
         LOG.log(Level.INFO, "deleting order {0} ...", orderId);
         service.deleteOrder(Long.parseLong(orderId));
         LOG.log(Level.INFO, "successfully deleted order {0}", orderId);
-        return new ResponseEntity( HttpStatus.OK);
+        return new ResponseEntity( HttpStatus.OK );
     }
 
     @RequestMapping(
             value = "/{orderId}",
-            method = RequestMethod.PATCH,
+            method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public @ResponseBody Resource<Order> updateOrder(@PathVariable("orderId") String orderId,
-            Order order) throws NoSuchOrderException, InvalidOrderException {
-
-        return getResource(service.updateOrder(order,
+    public @ResponseBody Resource<Order> replaceOrder(@PathVariable("orderId") String orderId,
+             @RequestBody Order order) throws NoSuchOrderException, InvalidOrderException {
+        LOG.log(Level.INFO, "trying to update order: {0}", order);
+        return getResource(service.replaceOrder(order,
                 Long.parseLong(orderId)));
 
     }
@@ -122,18 +142,12 @@ public class OrderController {
                 .withSelfRel());
 
         switch (order.status) {
-            case UNPAID:
-                result.add(
-                        entityLinks.linkToSingleResource(Order.class, order.id)
-                        .withRel("cancel"),
-                        entityLinks.linkToSingleResource(Order.class, order.id)
-                        .withRel("update")
-                );
+            case UNPAID:               
                 try {
                     result.add(ControllerLinkBuilder.linkTo(
                             ReceiptController.class.getMethod("payOrder", String.class, Payment.class),
                             order.id)
-                            .withRel("pay")
+                            .withRel("payment")
                     );
                 } catch (NoSuchMethodException nsme) {
                     LOG.log(Level.SEVERE, "invalid refernece to method", nsme);
