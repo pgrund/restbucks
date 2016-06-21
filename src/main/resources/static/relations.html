@@ -44,151 +44,102 @@
                             <a href="/restbucks.html#">Info</a>
                         </li>
                         <li>
-                            <a href="/restbucks.html#model">Model</a>
+                            <a href="#self">Self</a>
                         </li>
                         <li>
-                            <a href="/restbucks.html#hypermedia">Hypermedia</a>
+                            <a href="#update">Update</a>
+                        </li>
+                        <li>
+                            <a href="#pay">Pay</a>
+                        </li>
+                        <li>
+                            <a href="#cancel">Cancel</a>
+                        </li>
+                        <li>
+                            <a href="#collection">Collection</a>
                         </li>
                     </ul>
                     <p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>
                 </div><!--/.nav-collapse -->
             </div>
         </nav>
-        <div class="container-fluid">
-            <div id="messagebox"></div>
+        <div class="jumbotron">
+            <section>
+                <article>
+                    <h2>general</h2>
+                    <p>Available HTTP verbs for a resource (href of link) can be retrieved using default <em>OPTIONS</em> call to resource.</p>
+                    <p>If not mentioned explicitly, following representations are availabe for <a href="">content negotiation</a>:</p>
+                    <ul>
+                        <li><code>application/json</code></li>
+                        <li><code>application/hal+json</code></li>
+                    </ul>
+                </article>
+                <article>
+                    <h2>IANA link relation</h2>
+                    <p><a href="http://www.iana.org">IANA</a> provides a <a href="http://www.iana.org/assignments/link-relations/link-relations.xhtml">list</a> of registered relations. Please check tehre first before introducing new one ...</p>
+                </article>
+                <article id="self">
+                    <h2>self</h2>
+                    <p>Conveys an identifier for the link's context.</p>
+                    <ul>
+                        <li>Specified by <a href="http://www.iana.org/go/rfc4287">RFC 4287</a></li>
+                        <li>registered at <a href="http://www.iana.org/assignments/link-relations/link-relations.xhtml">IANA</a></li>
+                    </ul>
+                    <p>actions:</p>
+                    <dl>
+                        <dt>GET</dt>
+                        <dd>
+                            <p>get representation of resource order <em>(C<strong>R</strong>UD)</em></p>
+                            <p>representations:</p>
+                            <ul>
+                                <li><code>application/json</code></li>
+                                <li><code>application/hal+json</code></li>
+                                <li><code>text/html</code></li>
+                            </ul>                
+                        </dd> 
+                        <dt>PATCH</dt>
+                        <dd>
+                            <p>UPDATE resource order <em>(CR<strong>U</strong>D)</em></p>
+                            <p>representations:</p>
+                            <ul>
+                                <li><code>application/json</code></li>                                
+                            </ul>                
+                        </dd>  
+                    </dl>
 
-            <div class="row" id="order">
-                <div class="span2">
-                    <div class="well sidebar-nav">
-                        <ul class="nav nav-list">
-                            <li class="nav-header">RESTBucks</li>      
-                            <li class="divider" role="seperator"></li>
-                            <li>
-                                <a href="/">new order</a>
-                            </li>
-                            <li class="divider" role="seperator"></li>
-                            <li class="nav-header">
-                                <a href="https://github.com/pgrund/restbucks">source</a>
-                            </li>
-                        </ul>
-                    </div><!--/.well -->
-                </div><!--/span-->
-                <div class="span10">
-                    <div class="jumbotron">
-                        <h2>RESTBucks Order <span id="orderid"></span></h2>
-                        <form id="updateOrder" class="form-horizontal" role="form">
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">Location</label>
-                                <label class="radio-inline"> 
-                                    <input type="radio" name="location" value="IN_SHOP" required> in shop 
-                                </label>
-                                <label class="radio-inline"> 
-                                    <input type="radio" name="location" value="TAKE_AWAY" required> take away 
-                                </label>
-                            </div>
-                            <fieldset id="items">
-                                <legend>Items</legend>
+                </article>
+                <article id="payment">
+                    <h2>payment</h2>
+                    <p>Indicates a resource where payment is accepted.</p>
+                    <ul>
+                        <li>Specified by <a href="http://www.iana.org/go/rfc5988">RFC 5988</a></li>
+                        <li>registered at <a href="http://www.iana.org/assignments/link-relations/link-relations.xhtml">IANA</a></li>
+                    </ul>
+                </article>
+                <article id="collection">
+                    <h2>collection</h2>
+                    <p>The target IRI points to a resource which represents the collection resource for the context IRI.</p>
+                    <ul>
+                        <li>Specified by <a href="http://www.iana.org/go/rfc6573">RFC 6573</a></li>
+                        <li>registered at <a href="http://www.iana.org/assignments/link-relations/link-relations.xhtml">IANA</a></li>
+                    </ul>
+                </article>
+            </section>
+            <section>
 
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="items[0].quantity">Quantity</label>
-                                    <div class="col-sm-2">
-                                        <input type="number" class="form-control" min="1" name="items[0].quantity" id="0_quantity" value="0"/>
-                                    </div>
-                                </div> 
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="items[0].name">Name</label>
-                                    <div class="col-sm-3">
-                                        <select name="items[0].name" id="0_name" class="form-control">
-                                            <option value="CAPUCCINO" selected="selected">Cappuccino</option>
-                                            <option value="LATTE">Latte</option>
-                                            <option value="ESPRESSO">Espresso</option>
-                                            <option value="FLAT_WHITE">Flat White</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="items[0].milk">Milk</label>
-                                    <div class="col-sm-3">
-                                        <select name="items[0].milk" id="0_milk" class="form-control">
-                                            <option value="SEMI" selected="selected">semi milk</option>
-                                            <option value="SKIM">skim milk</option>
-                                            <option value="WHOLE">whole milk</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="items[0].size">Size</label>
-                                    <div class="col-sm-3">
-                                        <select name="items[0].size" id="0_size" class="form-control">
-                                            <option value="SMALL">small</option>
-                                            <option value="MEDIUM" selected="selected">medium</option>
-                                            <option value="LARGE">large</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="items[0].shots">Shot</label>
-                                    <div class="col-sm-3">
-                                        <select name="items[0].shots" id="0_shots" class="form-control">
-                                            <option value="SINGLE" selected="selected">single</option>
-                                            <option value="DOUBLE">double</option>
-                                            <option value="TRIPLE">triple</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                            </fieldset>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <div class="progress" id="test1">
-                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0%</div>                    
-            </div>
-            <button id="test">test</button>
+                <article id="update">
+                    <h2>update</h2>
+                    <p>...</p>
+                </article>
+                <article id="pay">
+                    <h2>pay</h2>
+                    <p>...</p>
+                </article>
+                <article id="cancel">
+                    <h2>cancel</h2>
+                    <p>...</p>
+                </article>
+            </section>
         </div>
-
-        <!-- Le javascript
-        ================================================== -->
-        <!-- Placed at the end of the document so the pages load faster -->
-        <script src="/js/jquery.js"></script>
-        <script src="/js/bootstrap-transition.js"></script>
-        <script src="/js/bootstrap-alert.js"></script>
-        <script src="/js/bootstrap-modal.js"></script>
-        <script src="/js/bootstrap-dropdown.js"></script>
-        <script src="/js/bootstrap-scrollspy.js"></script>
-        <script src="/js/bootstrap-tab.js"></script>
-        <script src="/js/bootstrap-tooltip.js"></script>
-        <script src="/js/bootstrap-popover.js"></script>
-        <script src="/js/bootstrap-button.js"></script>
-        <script src="/js/bootstrap-collapse.js"></script>
-        <script src="/js/bootstrap-carousel.js"></script>
-        <script src="/js/bootstrap-typeahead.js"></script>
-        <script type="text/javascript">
-            $(function () {
-                $("#test").click(function () {
-                    console.log("start test");
-                    var t = setInterval(function () {                             
-                        $('#test1 .progress-bar').each(function () {
-                            var next = (parseInt($(this).attr("aria-valuenow"))+ 10) % 100;                           
-                            $(this).attr("aria-valuenow", next)
-                                  .css("width", next + "%")
-                                  .text( next + "%");
-                          });
-                        }, 500);
-                    
-
-                    window.setTimeout(function () {
-                        console.log("set timeout");
-                        clearInterval(t);
-                         $('#test1').hide();
-                        console.log("..done");
-                    }, 5000);
-
-
-                });
-            });
-        </script>
     </body>
 </html>
