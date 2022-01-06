@@ -10,9 +10,9 @@
     <description>RESTBucks example, known from *REST in practice*, based on CXF.</description>
     
     <properties>
-        <cxf.version>2.7.18</cxf.version>
-        <spring.version>3.0.6.RELEASE</spring.version>
-        <moskito.version>2.1.3</moskito.version>
+        <cxf.version>3.3.8</cxf.version>
+        <spring.version>5.2.18.RELEASE</spring.version>
+        <moskito.version>2.7.7</moskito.version>
     </properties>
     
     <repositories>
