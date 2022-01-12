@@ -11,7 +11,7 @@
     
     <properties>
         <cxf.version>3.3.10</cxf.version>
-        <spring.version>5.2.18.RELEASE</spring.version>
+        <spring.version>5.2.19.RELEASE</spring.version>
         <moskito.version>2.7.7</moskito.version>
     </properties>
     
