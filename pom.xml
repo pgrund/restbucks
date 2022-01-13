@@ -12,7 +12,7 @@
     <properties>
         <cxf.version>3.3.10</cxf.version>
         <spring.version>5.2.18.RELEASE</spring.version>
-        <moskito.version>2.7.7</moskito.version>
+        <moskito.version>2.10.1</moskito.version>
     </properties>
     
     <repositories>
